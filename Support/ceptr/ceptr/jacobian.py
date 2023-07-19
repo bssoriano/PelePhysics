@@ -8,6 +8,7 @@ import ceptr.constants as cc
 import ceptr.utilities as cu
 import ceptr.writer as cw
 
+import os
 
 def ajac(
     fstream,
@@ -530,10 +531,14 @@ def ajac_symbolic(
 
             # Now write out the species jacobian terms
             cw.writer(fstream, cw.comment("Species terms"))
+            os.makedirs('log_expr', exist_ok=True)
+            f_expr = open(os.path.join('log_expr', 'nExp'), 'a+')
             if syms.hformat == "cpu":
-                syms.write_symjac_to_cpp_cpu(species_info, cw, fstream)
+                n_expr = syms.write_symjac_to_cpp_cpu(species_info, cw, fstream)
             else:
-                syms.write_symjac_to_cpp_gpu(species_info, cw, fstream)
+                n_expr = syms.write_symjac_to_cpp_gpu(species_info, cw, fstream)
+            f_expr.write(str(n_expr)+'\n')
+            f_expr.close()
 
             cw.writer(fstream)
 
