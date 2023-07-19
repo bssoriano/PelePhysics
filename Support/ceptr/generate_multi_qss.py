@@ -36,7 +36,7 @@ parser.add_argument(
     metavar="",
     required=False,
     help="Number of mechanisms to generate",
-    default=2,
+    default=10,
 )
 args = parser.parse_args()
 
@@ -49,11 +49,11 @@ choices['remove_pow10'] = [True, False]
 choices['round_decimals'] = [True, False]
 
 choices['min_op_count'] = [0]
-choices['min_op_count_all'] = list(range(10))
+choices['min_op_count_all'] = [0, 10, 20]
 choices['gradual_op_count'] = [True]
 choices['remove_single_symbols_cse'] = [True]
 
-choices['store_in_jacobian'] = [True, False]
+choices['store_in_jacobian'] = [True]
 choices['recycle_cse'] = [True, False]
 
 keys = [key for key in choices]
@@ -62,13 +62,18 @@ c = [choices[key] for key in keys]
 allComb = list(
     itertools.product(*c)
 )
-sweep = random.sample(allComb, args.number_mechs)
+
+n_mechs = min(len(allComb), args.number_mechs)
+
+print(f"INFO: sampling {n_mechs}/{len(allComb)} mechs")
+
+sweep = random.sample(allComb, n_mechs)
 np.savez("params.npz", val=sweep, name=keys)
 
 
 template_toml = toml.load(os.path.join(args.mech_folder, args.template_mech, 'qssa_input.toml'))
 
-for im in range(args.number_mechs):
+for im in range(n_mechs):
     copy_tree(
         os.path.join(args.mech_folder, args.template_mech),
         os.path.join(args.mech_folder, args.template_mech + f"_{im}")
