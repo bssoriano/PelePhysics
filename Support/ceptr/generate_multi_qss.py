@@ -43,18 +43,18 @@ args = parser.parse_args()
 
 choices = {}
 choices['h_format'] = ['gpu', 'cpu']
-choices['remove_1'] = ['true', 'false']
-choices['remove_pow'] = ['true', 'false']
-choices['remove_pow10'] = ['true', 'false']
-choices['round_decimals'] = ['true', 'false']
+choices['remove_1'] = [True, False]
+choices['remove_pow'] = [True, False]
+choices['remove_pow10'] = [True, False]
+choices['round_decimals'] = [True, False]
 
 choices['min_op_count'] = [0]
 choices['min_op_count_all'] = list(range(10))
-choices['gradual_op_count'] = ['true']
-choices['remove_single_symbols_cse'] = ['true']
+choices['gradual_op_count'] = [True]
+choices['remove_single_symbols_cse'] = [True]
 
-choices['store_in_jacobian'] = ['true', 'false']
-choices['recycle_cse'] = ['true', 'false']
+choices['store_in_jacobian'] = [True, False]
+choices['recycle_cse'] = [True, False]
 
 keys = [key for key in choices]
 c = [choices[key] for key in keys]
