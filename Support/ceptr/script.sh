@@ -15,6 +15,7 @@ source /projects/hpacf/mhassana/QSSPaper/PelePhysics/setup.sh
 rm -rf ${PELE_PHYSICS_HOME}/Support/Mechanism/Models/dodecane_lu_qss_*
 
 cd ${PELE_PHYSICS_HOME}/Support/ceptr
+rm -rf log_expr
 
 ${poetry_bin} run python generate_multi_qss.py -mf ${PELE_PHYSICS_HOME}/Support/Mechanism/Models -tm dodecane_lu_qss -nm 100 
 
