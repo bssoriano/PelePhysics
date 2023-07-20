@@ -374,7 +374,6 @@ class SymbolicMath:
             f"Starting expression reduction from {n_cse} expressions",
             end="...\n",
         )
-        n_remaining = len(common_expr_lhs)
         if self.min_op_count_all > 0:
             if self.gradual_op_count:
                 for count_lim in range(1, self.min_op_count_all + 1):
@@ -384,7 +383,6 @@ class SymbolicMath:
                         flush=True,
                     )
                     (
-                        n_remaining,
                         common_expr_lhs,
                         common_expr_rhs,
                         final_expr,
@@ -404,7 +402,6 @@ class SymbolicMath:
                     flush=True,
                 )
                 (
-                    n_remaining,
                     common_expr_lhs,
                     common_expr_rhs,
                     final_expr,
@@ -427,7 +424,6 @@ class SymbolicMath:
                     )
                     if self.top_bottom:
                         (
-                            n_remaining,
                             common_expr_lhs,
                             common_expr_rhs,
                             final_expr,
@@ -440,7 +436,6 @@ class SymbolicMath:
                         )
                     else:
                         (
-                            n_remaining,
                             common_expr_lhs,
                             common_expr_rhs,
                             final_expr,
@@ -461,7 +456,6 @@ class SymbolicMath:
                 )
                 if self.top_bottom:
                     (
-                        n_remaining,
                         common_expr_lhs,
                         common_expr_rhs,
                         final_expr,
@@ -474,7 +468,6 @@ class SymbolicMath:
                     )
                 else:
                     (
-                        n_remaining,
                         common_expr_lhs,
                         common_expr_rhs,
                         final_expr,
@@ -490,7 +483,6 @@ class SymbolicMath:
         if self.remove_single_symbols_cse:
             print("\tStarting single symbol removal", end="...", flush=True)
             (
-                n_remaining,
                 common_expr_lhs,
                 common_expr_rhs,
                 final_expr,
@@ -505,7 +497,6 @@ class SymbolicMath:
         if self.recycle_cse:
             print("\tStarting cse recycling", end="...", flush=True)
             (
-                n_remaining,
                 common_expr_lhs,
                 common_expr_rhs,
                 final_expr,
@@ -518,7 +509,6 @@ class SymbolicMath:
         print("Done!", flush=True)
 
         return (
-            n_remaining,
             common_expr_lhs,
             common_expr_rhs,
             final_expr,
@@ -578,7 +568,7 @@ class SymbolicMath:
 
         print(f"Remaining expressions = {len(common_expr_lhs)}", end="...")
 
-        return len(common_expr_lhs), common_expr_lhs, common_expr_rhs, final_expr
+        return common_expr_lhs, common_expr_rhs, final_expr
 
     def reduce_expr_top_bottom_rec_count(
         self,
@@ -646,7 +636,7 @@ class SymbolicMath:
 
         print(f"Remaining expressions = {len(common_expr_lhs)}", end="...")
 
-        return len(common_expr_lhs), common_expr_lhs, common_expr_rhs, final_expr
+        return common_expr_lhs, common_expr_rhs, final_expr
 
     def reduce_expr_top_bottom(
         self,
@@ -697,7 +687,7 @@ class SymbolicMath:
 
         print(f"Remaining expressions = {len(common_expr_lhs)}", end="...")
 
-        return len(common_expr_lhs), common_expr_lhs, common_expr_rhs, final_expr
+        return common_expr_lhs, common_expr_rhs, final_expr
 
     def reduce_expr_bottom_up(
         self,
@@ -757,7 +747,7 @@ class SymbolicMath:
 
         print(f"Remaining expressions = {len(common_expr_lhs)}", end="...")
 
-        return len(common_expr_lhs), common_expr_lhs, common_expr_rhs, final_expr
+        return common_expr_lhs, common_expr_rhs, final_expr
 
     def recycle_cse_post(
         self,
@@ -827,7 +817,6 @@ class SymbolicMath:
         print(f"Remaining expressions = {n_cse - len(to_replace)}", end="...")
 
         return (
-            n_cse - len(to_replace),
             common_expr_lhs,
             common_expr_rhs,
             final_expr,
@@ -994,13 +983,16 @@ class SymbolicMath:
         print("Done!", flush=True)
 
         (
-            n_remaining,
             common_expr_lhs,
             common_expr_rhs,
             final_expr,
             to_replace,
             replace_with,
         ) = self.reduce_expr(array_cse)
+
+        n_remaining_jac = 0
+        n_remaining_jac_noconst = 0
+
         for cse_idx in range(len(common_expr_lhs)):
             if common_expr_lhs[cse_idx] in to_replace:
                 ind = to_replace.index(common_expr_lhs[cse_idx])
@@ -1018,13 +1010,16 @@ class SymbolicMath:
                     fstream,
                     f"amrex::Real {left_cse} = {right_cse};",
                 )
+                n_remaining_noconst +=1 
+                n_remaining += 1
             else:
                 left_cse = self.convert_to_cpp(common_expr_lhs[cse_idx])
                 right_cse = self.convert_to_cpp(common_expr_rhs[cse_idx])
                 cw.writer(
                     fstream,
                     f"const amrex::Real {left_cse} = {right_cse};",
-                )
+                ) 
+                n_remaining += 1
 
         cw.writer(
             fstream,
@@ -1034,6 +1029,7 @@ class SymbolicMath:
             ),
         )
 
+        n_remaining_chain = 0
         # Write all the entries in human readable format
         for i in range(n_total):
             # The full expression is stored in array_cse index 1
@@ -1050,6 +1046,7 @@ class SymbolicMath:
                         f" {cpp_str};"
                     ),
                 )
+                n_remaining_chain += 1
             elif i < n_dscqssdscqss + n_dscqssdsc:
                 cw.writer(
                     fstream,
@@ -1058,6 +1055,7 @@ class SymbolicMath:
                         f" {cpp_str};"
                     ),
                 )
+                n_remaining_chain += 1
             elif i < n_dscqssdscqss + n_dscqssdsc + n_dwdotdscqss:
                 cw.writer(
                     fstream,
@@ -1066,6 +1064,7 @@ class SymbolicMath:
                         f" {cpp_str};"
                     ),
                 )
+                n_remaining_chain += 1
             else:
                 cw.writer(
                     fstream,
@@ -1074,6 +1073,7 @@ class SymbolicMath:
                         f" {cpp_str};"
                     ),
                 )
+                n_remaining_chain += 1
 
         cw.writer(fstream, cw.comment("Write dscqss_dsc terms..."))
 
@@ -1129,7 +1129,7 @@ class SymbolicMath:
                     ),
                 )
     
-        return n_remaining
+        return n_remaining_jac, n_remaining_jac_noconst, n_remaining_chain
 
     def write_symjac_to_cpp_gpu(self, species_info, cw, fstream):
         """Write species jacobian terms as functions of common subexpressions.
@@ -1175,13 +1175,17 @@ class SymbolicMath:
         print("Done!", flush=True)
 
         (
-            n_remaining,
             common_expr_lhs,
             common_expr_rhs,
             final_expr,
             to_replace,
             replace_with,
         ) = self.reduce_expr(array_cse)
+
+        n_remaining_chain = 0
+        n_remaining_jac = 0
+        n_remaining_jac_noconst = 0
+
         for cse_idx in range(len(common_expr_lhs)):
             if common_expr_lhs[cse_idx] in to_replace:
                 ind = to_replace.index(common_expr_lhs[cse_idx])
@@ -1199,6 +1203,8 @@ class SymbolicMath:
                     fstream,
                     f"amrex::Real {left_cse} = {right_cse};",
                 )
+                n_remaining_jac += 1
+                n_remaining_jac_noconst += 1
             else:
                 left_cse = self.convert_to_cpp(common_expr_lhs[cse_idx])
                 try:
@@ -1210,6 +1216,7 @@ class SymbolicMath:
                     fstream,
                     f"const amrex::Real {left_cse} = {right_cse};",
                 )
+                n_remaining_jac += 1
 
         # Compute dscqss_dsc strings from CSEs
         dscqss_dsc = [""] * (
@@ -1325,7 +1332,7 @@ class SymbolicMath:
                     (f"J[{idx}]" f" = {final_string};"),
                 )
 
-        return n_remaining
+        return n_remaining_jac, n_remaining_jac_noconst, n_remaining_chain
 
     def write_array_to_cpp_no_cse(
         self, list_smp, array_str, cw, fstream, index_list=None

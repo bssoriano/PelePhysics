@@ -534,10 +534,10 @@ def ajac_symbolic(
             os.makedirs('log_expr', exist_ok=True)
             f_expr = open(os.path.join('log_expr', 'nExp'), 'a+')
             if syms.hformat == "cpu":
-                n_expr = syms.write_symjac_to_cpp_cpu(species_info, cw, fstream)
+                n_remaining_jac, n_remaining_jac_const, n_remaining_chain = syms.write_symjac_to_cpp_cpu(species_info, cw, fstream)
             else:
-                n_expr = syms.write_symjac_to_cpp_gpu(species_info, cw, fstream)
-            f_expr.write(str(n_expr)+'\n')
+                n_remaining_jac, n_remaining_jac_const, n_remaining_chain = syms.write_symjac_to_cpp_gpu(species_info, cw, fstream)
+            f_expr.write(f"{n_remaining_jac}, {n_remaining_jac_const}, {n_remaining_chain}\n")
             f_expr.close()
 
             cw.writer(fstream)
