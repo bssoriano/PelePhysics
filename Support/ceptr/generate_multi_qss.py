@@ -46,7 +46,7 @@ choices['h_format'] = ['gpu', 'cpu']
 choices['remove_1'] = [True, False]
 choices['remove_pow'] = [True, False]
 choices['remove_pow10'] = [True, False]
-choices['round_decimals'] = [True, False]
+choices['round_decimals'] = [True]
 
 choices['min_op_count'] = [0]
 choices['min_op_count_all'] = [0, 10, 20]
