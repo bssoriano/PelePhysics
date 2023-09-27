@@ -447,398 +447,398 @@ CKNCF(int* ncf)
     ncf[id] = 0;
   }
 
-  // h
+  // H
   ncf[0 * kd + 0] = 1; // H
 
-  // h2
+  // H2
   ncf[1 * kd + 0] = 2; // H
 
-  // o
+  // O
   ncf[2 * kd + 5] = 1; // O
 
-  // o2
+  // O2
   ncf[3 * kd + 5] = 2; // O
 
-  // oh
+  // OH
   ncf[4 * kd + 0] = 1; // H
   ncf[4 * kd + 5] = 1; // O
 
-  // h2o
+  // H2O
   ncf[5 * kd + 0] = 2; // H
   ncf[5 * kd + 5] = 1; // O
 
-  // n2
+  // N2
   ncf[6 * kd + 7] = 2; // N
 
-  // co
+  // CO
   ncf[7 * kd + 3] = 1; // C
   ncf[7 * kd + 5] = 1; // O
 
-  // hco
+  // HCO
   ncf[8 * kd + 3] = 1; // C
   ncf[8 * kd + 0] = 1; // H
   ncf[8 * kd + 5] = 1; // O
 
-  // co2
+  // CO2
   ncf[9 * kd + 3] = 1; // C
   ncf[9 * kd + 5] = 2; // O
 
-  // ch3
+  // CH3
   ncf[10 * kd + 3] = 1; // C
   ncf[10 * kd + 0] = 3; // H
 
-  // ch4
+  // CH4
   ncf[11 * kd + 3] = 1; // C
   ncf[11 * kd + 0] = 4; // H
 
-  // ho2
+  // HO2
   ncf[12 * kd + 0] = 1; // H
   ncf[12 * kd + 5] = 2; // O
 
-  // h2o2
+  // H2O2
   ncf[13 * kd + 0] = 2; // H
   ncf[13 * kd + 5] = 2; // O
 
-  // ch2o
+  // CH2O
   ncf[14 * kd + 3] = 1; // C
   ncf[14 * kd + 0] = 2; // H
   ncf[14 * kd + 5] = 1; // O
 
-  // ch3o
+  // CH3O
   ncf[15 * kd + 3] = 1; // C
   ncf[15 * kd + 0] = 3; // H
   ncf[15 * kd + 5] = 1; // O
 
-  // c2h6
+  // C2H6
   ncf[16 * kd + 3] = 2; // C
   ncf[16 * kd + 0] = 6; // H
 
-  // c2h4
+  // C2H4
   ncf[17 * kd + 3] = 2; // C
   ncf[17 * kd + 0] = 4; // H
 
-  // c2h5
+  // C2H5
   ncf[18 * kd + 3] = 2; // C
   ncf[18 * kd + 0] = 5; // H
 
-  // ch2
+  // CH2
   ncf[19 * kd + 3] = 1; // C
   ncf[19 * kd + 0] = 2; // H
 
-  // ch
+  // CH
   ncf[20 * kd + 3] = 1; // C
   ncf[20 * kd + 0] = 1; // H
 
-  // c2h
+  // C2H
   ncf[21 * kd + 3] = 2; // C
   ncf[21 * kd + 0] = 1; // H
 
-  // c2h2
+  // C2H2
   ncf[22 * kd + 3] = 2; // C
   ncf[22 * kd + 0] = 2; // H
 
-  // c2h3
+  // C2H3
   ncf[23 * kd + 3] = 2; // C
   ncf[23 * kd + 0] = 3; // H
 
-  // ch3oh
+  // CH3OH
   ncf[24 * kd + 3] = 1; // C
   ncf[24 * kd + 0] = 4; // H
   ncf[24 * kd + 5] = 1; // O
 
-  // ch2oh
+  // CH2OH
   ncf[25 * kd + 3] = 1; // C
   ncf[25 * kd + 0] = 3; // H
   ncf[25 * kd + 5] = 1; // O
 
-  // ch2co
+  // CH2CO
   ncf[26 * kd + 3] = 2; // C
   ncf[26 * kd + 0] = 2; // H
   ncf[26 * kd + 5] = 1; // O
 
-  // hcco
+  // HCCO
   ncf[27 * kd + 3] = 2; // C
   ncf[27 * kd + 0] = 1; // H
   ncf[27 * kd + 5] = 1; // O
 
-  // c2h5oh
+  // C2H5OH
   ncf[28 * kd + 3] = 2; // C
   ncf[28 * kd + 0] = 6; // H
   ncf[28 * kd + 5] = 1; // O
 
-  // pc2h4oh
+  // PC2H4OH
   ncf[29 * kd + 3] = 2; // C
   ncf[29 * kd + 0] = 5; // H
   ncf[29 * kd + 5] = 1; // O
 
-  // sc2h4oh
+  // SC2H4OH
   ncf[30 * kd + 3] = 2; // C
   ncf[30 * kd + 0] = 5; // H
   ncf[30 * kd + 5] = 1; // O
 
-  // ch3co
+  // CH3CO
   ncf[31 * kd + 3] = 2; // C
   ncf[31 * kd + 0] = 3; // H
   ncf[31 * kd + 5] = 1; // O
 
-  // ch2cho
+  // CH2CHO
   ncf[32 * kd + 3] = 2; // C
   ncf[32 * kd + 0] = 3; // H
   ncf[32 * kd + 5] = 1; // O
 
-  // ch3cho
+  // CH3CHO
   ncf[33 * kd + 3] = 2; // C
   ncf[33 * kd + 0] = 4; // H
   ncf[33 * kd + 5] = 1; // O
 
-  // c3h4-a
+  // C3H4-A
   ncf[34 * kd + 3] = 3; // C
   ncf[34 * kd + 0] = 4; // H
 
-  // c3h4-p
+  // C3H4-P
   ncf[35 * kd + 3] = 3; // C
   ncf[35 * kd + 0] = 4; // H
 
-  // c3h6
+  // C3H6
   ncf[36 * kd + 3] = 3; // C
   ncf[36 * kd + 0] = 6; // H
 
-  // c4h6
+  // C4H6
   ncf[37 * kd + 3] = 4; // C
   ncf[37 * kd + 0] = 6; // H
 
-  // c4h7
+  // C4H7
   ncf[38 * kd + 3] = 4; // C
   ncf[38 * kd + 0] = 7; // H
 
-  // c4h8-2
+  // C4H8-2
   ncf[39 * kd + 3] = 4; // C
   ncf[39 * kd + 0] = 8; // H
 
-  // c4h8-1
+  // C4H8-1
   ncf[40 * kd + 3] = 4; // C
   ncf[40 * kd + 0] = 8; // H
 
-  // ch3coch2
+  // CH3COCH2
   ncf[41 * kd + 3] = 3; // C
   ncf[41 * kd + 0] = 5; // H
   ncf[41 * kd + 5] = 1; // O
 
-  // c2h5cho
+  // C2H5CHO
   ncf[42 * kd + 3] = 3; // C
   ncf[42 * kd + 0] = 6; // H
   ncf[42 * kd + 5] = 1; // O
 
-  // c2h5co
+  // C2H5CO
   ncf[43 * kd + 3] = 3; // C
   ncf[43 * kd + 0] = 5; // H
   ncf[43 * kd + 5] = 1; // O
 
-  // c5h9
+  // C5H9
   ncf[44 * kd + 3] = 5; // C
   ncf[44 * kd + 0] = 9; // H
 
-  // c5h10-1
+  // C5H10-1
   ncf[45 * kd + 3] = 5;  // C
   ncf[45 * kd + 0] = 10; // H
 
-  // c5h10-2
+  // C5H10-2
   ncf[46 * kd + 3] = 5;  // C
   ncf[46 * kd + 0] = 10; // H
 
-  // bc5h10
+  // BC5H10
   ncf[47 * kd + 3] = 5;  // C
   ncf[47 * kd + 0] = 10; // H
 
-  // cc5h10
+  // CC5H10
   ncf[48 * kd + 3] = 5;  // C
   ncf[48 * kd + 0] = 10; // H
 
-  // ic5h9
+  // IC5H9
   ncf[49 * kd + 3] = 5; // C
   ncf[49 * kd + 0] = 9; // H
 
-  // c2h5o
+  // C2H5O
   ncf[50 * kd + 3] = 2; // C
   ncf[50 * kd + 0] = 5; // H
   ncf[50 * kd + 5] = 1; // O
 
-  // ch3o2
+  // CH3O2
   ncf[51 * kd + 3] = 1; // C
   ncf[51 * kd + 0] = 3; // H
   ncf[51 * kd + 5] = 2; // O
 
-  // c2h4o1-2
+  // C2H4O1-2
   ncf[52 * kd + 3] = 2; // C
   ncf[52 * kd + 0] = 4; // H
   ncf[52 * kd + 5] = 1; // O
 
-  // c2h3co
+  // C2H3CO
   ncf[53 * kd + 3] = 3; // C
   ncf[53 * kd + 0] = 3; // H
   ncf[53 * kd + 5] = 1; // O
 
-  // c2h3cho
+  // C2H3CHO
   ncf[54 * kd + 3] = 3; // C
   ncf[54 * kd + 0] = 4; // H
   ncf[54 * kd + 5] = 1; // O
 
-  // c3h5o
+  // C3H5O
   ncf[55 * kd + 3] = 3; // C
   ncf[55 * kd + 0] = 5; // H
   ncf[55 * kd + 5] = 1; // O
 
-  // c4h7o
+  // C4H7O
   ncf[56 * kd + 3] = 4; // C
   ncf[56 * kd + 0] = 7; // H
   ncf[56 * kd + 5] = 1; // O
 
-  // c3h5-a
+  // C3H5-A
   ncf[57 * kd + 3] = 3; // C
   ncf[57 * kd + 0] = 5; // H
 
-  // c3h5-s
+  // C3H5-S
   ncf[58 * kd + 3] = 3; // C
   ncf[58 * kd + 0] = 5; // H
 
-  // c3h5-t
+  // C3H5-T
   ncf[59 * kd + 3] = 3; // C
   ncf[59 * kd + 0] = 5; // H
 
-  // c3h3
+  // C3H3
   ncf[60 * kd + 3] = 3; // C
   ncf[60 * kd + 0] = 3; // H
 
-  // c3h2
+  // C3H2
   ncf[61 * kd + 3] = 3; // C
   ncf[61 * kd + 0] = 2; // H
 
-  // ch2(s)
+  // CH2(S)
   ncf[62 * kd + 3] = 1; // C
   ncf[62 * kd + 0] = 2; // H
 
-  // tc3h6oh
+  // TC3H6OH
   ncf[63 * kd + 3] = 3; // C
   ncf[63 * kd + 0] = 7; // H
   ncf[63 * kd + 5] = 1; // O
 
-  // ic3h5oh
+  // IC3H5OH
   ncf[64 * kd + 3] = 3; // C
   ncf[64 * kd + 0] = 6; // H
   ncf[64 * kd + 5] = 1; // O
 
-  // nc3h7cho
+  // NC3H7CHO
   ncf[65 * kd + 3] = 4; // C
   ncf[65 * kd + 0] = 8; // H
   ncf[65 * kd + 5] = 1; // O
 
-  // nc3h7co
+  // NC3H7CO
   ncf[66 * kd + 3] = 4; // C
   ncf[66 * kd + 0] = 7; // H
   ncf[66 * kd + 5] = 1; // O
 
-  // ch3chco
+  // CH3CHCO
   ncf[67 * kd + 3] = 3; // C
   ncf[67 * kd + 0] = 4; // H
   ncf[67 * kd + 5] = 1; // O
 
-  // c3h6cho-3
+  // C3H6CHO-3
   ncf[68 * kd + 3] = 4; // C
   ncf[68 * kd + 0] = 7; // H
   ncf[68 * kd + 5] = 1; // O
 
-  // c3h6cho-2
+  // C3H6CHO-2
   ncf[69 * kd + 3] = 4; // C
   ncf[69 * kd + 0] = 7; // H
   ncf[69 * kd + 5] = 1; // O
 
-  // ch3chcho
+  // CH3CHCHO
   ncf[70 * kd + 3] = 3; // C
   ncf[70 * kd + 0] = 5; // H
   ncf[70 * kd + 5] = 1; // O
 
-  // c3h6cho-1
+  // C3H6CHO-1
   ncf[71 * kd + 3] = 4; // C
   ncf[71 * kd + 0] = 7; // H
   ncf[71 * kd + 5] = 1; // O
 
-  // nc4h9cho
+  // NC4H9CHO
   ncf[72 * kd + 3] = 5;  // C
   ncf[72 * kd + 0] = 10; // H
   ncf[72 * kd + 5] = 1;  // O
 
-  // nc4h9co
+  // NC4H9CO
   ncf[73 * kd + 3] = 5; // C
   ncf[73 * kd + 0] = 9; // H
   ncf[73 * kd + 5] = 1; // O
 
-  // c4h8cho-2
+  // C4H8CHO-2
   ncf[74 * kd + 3] = 5; // C
   ncf[74 * kd + 0] = 9; // H
   ncf[74 * kd + 5] = 1; // O
 
-  // c4h8cho-3
+  // C4H8CHO-3
   ncf[75 * kd + 3] = 5; // C
   ncf[75 * kd + 0] = 9; // H
   ncf[75 * kd + 5] = 1; // O
 
-  // c4h8cho-4
+  // C4H8CHO-4
   ncf[76 * kd + 3] = 5; // C
   ncf[76 * kd + 0] = 9; // H
   ncf[76 * kd + 5] = 1; // O
 
-  // hoch2o
+  // HOCH2O
   ncf[77 * kd + 3] = 1; // C
   ncf[77 * kd + 0] = 3; // H
   ncf[77 * kd + 5] = 2; // O
 
-  // hocho
+  // HOCHO
   ncf[78 * kd + 3] = 1; // C
   ncf[78 * kd + 0] = 2; // H
   ncf[78 * kd + 5] = 2; // O
 
-  // c6h12-1
+  // C6H12-1
   ncf[79 * kd + 3] = 6;  // C
   ncf[79 * kd + 0] = 12; // H
 
-  // c6h11
+  // C6H11
   ncf[80 * kd + 3] = 6;  // C
   ncf[80 * kd + 0] = 11; // H
 
-  // nc7h16
+  // NC7H16
   ncf[81 * kd + 3] = 7;  // C
   ncf[81 * kd + 0] = 16; // H
 
-  // c7h15-1
+  // C7H15-1
   ncf[82 * kd + 3] = 7;  // C
   ncf[82 * kd + 0] = 15; // H
 
-  // c7h15-2
+  // C7H15-2
   ncf[83 * kd + 3] = 7;  // C
   ncf[83 * kd + 0] = 15; // H
 
-  // c7h15-3
+  // C7H15-3
   ncf[84 * kd + 3] = 7;  // C
   ncf[84 * kd + 0] = 15; // H
 
-  // c7h15-4
+  // C7H15-4
   ncf[85 * kd + 3] = 7;  // C
   ncf[85 * kd + 0] = 15; // H
 
-  // c7h14-2
+  // C7H14-2
   ncf[86 * kd + 3] = 7;  // C
   ncf[86 * kd + 0] = 14; // H
 
-  // c7h13
+  // C7H13
   ncf[87 * kd + 3] = 7;  // C
   ncf[87 * kd + 0] = 13; // H
 
-  // c7h14o1-3
+  // C7H14O1-3
   ncf[88 * kd + 3] = 7;  // C
   ncf[88 * kd + 0] = 14; // H
   ncf[88 * kd + 5] = 1;  // O
 
-  // c7h14o2-4
+  // C7H14O2-4
   ncf[89 * kd + 3] = 7;  // C
   ncf[89 * kd + 0] = 14; // H
   ncf[89 * kd + 5] = 1;  // O
@@ -874,96 +874,96 @@ void
 CKSYMS_STR(amrex::Vector<std::string>& kname)
 {
   kname.resize(90);
-  kname[0] = "h";
-  kname[1] = "h2";
-  kname[2] = "o";
-  kname[3] = "o2";
-  kname[4] = "oh";
-  kname[5] = "h2o";
-  kname[6] = "n2";
-  kname[7] = "co";
-  kname[8] = "hco";
-  kname[9] = "co2";
-  kname[10] = "ch3";
-  kname[11] = "ch4";
-  kname[12] = "ho2";
-  kname[13] = "h2o2";
-  kname[14] = "ch2o";
-  kname[15] = "ch3o";
-  kname[16] = "c2h6";
-  kname[17] = "c2h4";
-  kname[18] = "c2h5";
-  kname[19] = "ch2";
-  kname[20] = "ch";
-  kname[21] = "c2h";
-  kname[22] = "c2h2";
-  kname[23] = "c2h3";
-  kname[24] = "ch3oh";
-  kname[25] = "ch2oh";
-  kname[26] = "ch2co";
-  kname[27] = "hcco";
-  kname[28] = "c2h5oh";
-  kname[29] = "pc2h4oh";
-  kname[30] = "sc2h4oh";
-  kname[31] = "ch3co";
-  kname[32] = "ch2cho";
-  kname[33] = "ch3cho";
-  kname[34] = "c3h4-a";
-  kname[35] = "c3h4-p";
-  kname[36] = "c3h6";
-  kname[37] = "c4h6";
-  kname[38] = "c4h7";
-  kname[39] = "c4h8-2";
-  kname[40] = "c4h8-1";
-  kname[41] = "ch3coch2";
-  kname[42] = "c2h5cho";
-  kname[43] = "c2h5co";
-  kname[44] = "c5h9";
-  kname[45] = "c5h10-1";
-  kname[46] = "c5h10-2";
-  kname[47] = "bc5h10";
-  kname[48] = "cc5h10";
-  kname[49] = "ic5h9";
-  kname[50] = "c2h5o";
-  kname[51] = "ch3o2";
-  kname[52] = "c2h4o1-2";
-  kname[53] = "c2h3co";
-  kname[54] = "c2h3cho";
-  kname[55] = "c3h5o";
-  kname[56] = "c4h7o";
-  kname[57] = "c3h5-a";
-  kname[58] = "c3h5-s";
-  kname[59] = "c3h5-t";
-  kname[60] = "c3h3";
-  kname[61] = "c3h2";
-  kname[62] = "ch2(s)";
-  kname[63] = "tc3h6oh";
-  kname[64] = "ic3h5oh";
-  kname[65] = "nc3h7cho";
-  kname[66] = "nc3h7co";
-  kname[67] = "ch3chco";
-  kname[68] = "c3h6cho-3";
-  kname[69] = "c3h6cho-2";
-  kname[70] = "ch3chcho";
-  kname[71] = "c3h6cho-1";
-  kname[72] = "nc4h9cho";
-  kname[73] = "nc4h9co";
-  kname[74] = "c4h8cho-2";
-  kname[75] = "c4h8cho-3";
-  kname[76] = "c4h8cho-4";
-  kname[77] = "hoch2o";
-  kname[78] = "hocho";
-  kname[79] = "c6h12-1";
-  kname[80] = "c6h11";
-  kname[81] = "nc7h16";
-  kname[82] = "c7h15-1";
-  kname[83] = "c7h15-2";
-  kname[84] = "c7h15-3";
-  kname[85] = "c7h15-4";
-  kname[86] = "c7h14-2";
-  kname[87] = "c7h13";
-  kname[88] = "c7h14o1-3";
-  kname[89] = "c7h14o2-4";
+  kname[0] = "H";
+  kname[1] = "H2";
+  kname[2] = "O";
+  kname[3] = "O2";
+  kname[4] = "OH";
+  kname[5] = "H2O";
+  kname[6] = "N2";
+  kname[7] = "CO";
+  kname[8] = "HCO";
+  kname[9] = "CO2";
+  kname[10] = "CH3";
+  kname[11] = "CH4";
+  kname[12] = "HO2";
+  kname[13] = "H2O2";
+  kname[14] = "CH2O";
+  kname[15] = "CH3O";
+  kname[16] = "C2H6";
+  kname[17] = "C2H4";
+  kname[18] = "C2H5";
+  kname[19] = "CH2";
+  kname[20] = "CH";
+  kname[21] = "C2H";
+  kname[22] = "C2H2";
+  kname[23] = "C2H3";
+  kname[24] = "CH3OH";
+  kname[25] = "CH2OH";
+  kname[26] = "CH2CO";
+  kname[27] = "HCCO";
+  kname[28] = "C2H5OH";
+  kname[29] = "PC2H4OH";
+  kname[30] = "SC2H4OH";
+  kname[31] = "CH3CO";
+  kname[32] = "CH2CHO";
+  kname[33] = "CH3CHO";
+  kname[34] = "C3H4-A";
+  kname[35] = "C3H4-P";
+  kname[36] = "C3H6";
+  kname[37] = "C4H6";
+  kname[38] = "C4H7";
+  kname[39] = "C4H8-2";
+  kname[40] = "C4H8-1";
+  kname[41] = "CH3COCH2";
+  kname[42] = "C2H5CHO";
+  kname[43] = "C2H5CO";
+  kname[44] = "C5H9";
+  kname[45] = "C5H10-1";
+  kname[46] = "C5H10-2";
+  kname[47] = "BC5H10";
+  kname[48] = "CC5H10";
+  kname[49] = "IC5H9";
+  kname[50] = "C2H5O";
+  kname[51] = "CH3O2";
+  kname[52] = "C2H4O1-2";
+  kname[53] = "C2H3CO";
+  kname[54] = "C2H3CHO";
+  kname[55] = "C3H5O";
+  kname[56] = "C4H7O";
+  kname[57] = "C3H5-A";
+  kname[58] = "C3H5-S";
+  kname[59] = "C3H5-T";
+  kname[60] = "C3H3";
+  kname[61] = "C3H2";
+  kname[62] = "CH2(S)";
+  kname[63] = "TC3H6OH";
+  kname[64] = "IC3H5OH";
+  kname[65] = "NC3H7CHO";
+  kname[66] = "NC3H7CO";
+  kname[67] = "CH3CHCO";
+  kname[68] = "C3H6CHO-3";
+  kname[69] = "C3H6CHO-2";
+  kname[70] = "CH3CHCHO";
+  kname[71] = "C3H6CHO-1";
+  kname[72] = "NC4H9CHO";
+  kname[73] = "NC4H9CO";
+  kname[74] = "C4H8CHO-2";
+  kname[75] = "C4H8CHO-3";
+  kname[76] = "C4H8CHO-4";
+  kname[77] = "HOCH2O";
+  kname[78] = "HOCHO";
+  kname[79] = "C6H12-1";
+  kname[80] = "C6H11";
+  kname[81] = "NC7H16";
+  kname[82] = "C7H15-1";
+  kname[83] = "C7H15-2";
+  kname[84] = "C7H15-3";
+  kname[85] = "C7H15-4";
+  kname[86] = "C7H14-2";
+  kname[87] = "C7H13";
+  kname[88] = "C7H14O1-3";
+  kname[89] = "C7H14O2-4";
 }
 
 // compute the sparsity pattern of the chemistry Jacobian
