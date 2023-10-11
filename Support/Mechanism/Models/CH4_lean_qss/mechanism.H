@@ -77,6 +77,7 @@ CKINDX(int& mm, int& kk, int& ii, int& nfit)
 }
 
 //  inverse molecular weights
+#ifdef AMREX_USE_GPU
 AMREX_GPU_CONSTANT const amrex::Real global_imw[13] = {
   0.4960317460317460, // H2
   0.9920634920634921, // H
@@ -92,6 +93,7 @@ AMREX_GPU_CONSTANT const amrex::Real global_imw[13] = {
   0.0333044694598015, // CH2O
   0.0356964374955379, // N2
 };
+#endif
 const amrex::Real h_global_imw[13] = {
   0.4960317460317460, // H2
   0.9920634920634921, // H
@@ -109,6 +111,7 @@ const amrex::Real h_global_imw[13] = {
 };
 
 //  molecular weights
+#ifdef AMREX_USE_GPU
 AMREX_GPU_CONSTANT const amrex::Real global_mw[13] = {
   2.016000,  // H2
   1.008000,  // H
@@ -124,6 +127,7 @@ AMREX_GPU_CONSTANT const amrex::Real global_mw[13] = {
   30.026000, // CH2O
   28.014000, // N2
 };
+#endif
 const amrex::Real h_global_mw[13] = {
   2.016000,  // H2
   1.008000,  // H
@@ -2364,7 +2368,7 @@ CKMMWC(const amrex::Real c[], amrex::Real& wtm)
   for (int id = 0; id < 13; ++id) {
     sumC += c[id];
   }
-  //  CK provides no guard against divison by zero
+  //  CK provides no guard against division by zero
   wtm = W / sumC;
 }
 
@@ -10482,6 +10486,107 @@ GET_CRITPARAMS(
            (28.013400 * 28.013400 * 33.958000);
   bi[12] = 0.08664 * Rcst * Tci[12] / (28.013400 * 33.958000);
   acentric_i[12] = 0.037200;
+}
+
+// compute the critical parameter quantities for each species for SRK
+AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE void
+GET_CRITPARAMS_SRK(
+  amrex::Real* sqrtOneOverTc,
+  amrex::Real* sqrtAsti,
+  amrex::Real* Bi,
+  amrex::Real* Fomega)
+{
+
+  // species 0: H2
+  // Imported from NIST
+  sqrtOneOverTc[0] = 1.7369646834812e-01;
+  sqrtAsti[0] = 2.4824229305911e+05;
+  Bi[0] = 9.1362254169923e+00;
+  Fomega[0] = 1.3798618890700e-01;
+
+  // species 1: H
+  // Computed from Lennard-Jones
+  sqrtOneOverTc[1] = 7.2391579785311e-02;
+  sqrtAsti[1] = 5.8451221185793e+05;
+  Bi[1] = 4.4006634563410e+00;
+  Fomega[1] = 4.8508000000000e-01;
+
+  // species 2: O
+  // Computed from Lennard-Jones
+  sqrtOneOverTc[2] = 9.7460146948181e-02;
+  sqrtAsti[2] = 4.2500156012386e+04;
+  Bi[2] = 6.6930234851885e-01;
+  Fomega[2] = 4.8508000000000e-01;
+
+  // species 3: O2
+  // Imported from NIST
+  sqrtOneOverTc[3] = 8.0430717653241e-02;
+  sqrtAsti[3] = 3.6980081924740e+04;
+  Bi[3] = 6.9005216444999e-01;
+  Fomega[3] = 5.1945301904908e-01;
+
+  // species 4: OH
+  // Computed from Lennard-Jones
+  sqrtOneOverTc[4] = 9.7460146948181e-02;
+  sqrtAsti[4] = 3.9981183985545e+04;
+  Bi[4] = 6.2963299076575e-01;
+  Fomega[4] = 4.8508000000000e-01;
+
+  // species 5: H2O
+  // Imported from NIST
+  sqrtOneOverTc[5] = 3.9311140369715e-02;
+  sqrtAsti[5] = 1.3145468419592e+05;
+  Bi[5] = 1.1727204136223e+00;
+  Fomega[5] = 1.0013577274636e+00;
+
+  // species 6: HO2
+  // Computed from Lennard-Jones
+  sqrtOneOverTc[6] = 8.4114315417892e-02;
+  sqrtAsti[6] = 3.3657825710980e+04;
+  Bi[6] = 6.4505861132042e-01;
+  Fomega[6] = 4.8508000000000e-01;
+
+  // species 7: CH3
+  // Computed from Lennard-Jones
+  sqrtOneOverTc[7] = 7.2642504557751e-02;
+  sqrtAsti[7] = 9.8558148656101e+04;
+  Bi[7] = 1.8791630452967e+00;
+  Fomega[7] = 4.8508000000000e-01;
+
+  // species 8: CH4
+  // Imported from NIST
+  sqrtOneOverTc[8] = 7.2440948474968e-02;
+  sqrtAsti[8] = 9.5215046085708e+04;
+  Bi[8] = 1.8605203320660e+00;
+  Fomega[8] = 5.0213035482700e-01;
+
+  // species 9: CO
+  // Imported from NIST
+  sqrtOneOverTc[9] = 8.6759935530451e-02;
+  sqrtAsti[9] = 4.3619324712923e+04;
+  Bi[9] = 9.7786303823350e-01;
+  Fomega[9] = 5.5459948367500e-01;
+
+  // species 10: CO2
+  // Imported from NIST
+  sqrtOneOverTc[10] = 5.7342616962522e-02;
+  sqrtAsti[10] = 4.3745610142919e+04;
+  Bi[10] = 6.7506167841745e-01;
+  Fomega[10] = 8.2653709187500e-01;
+
+  // species 11: CH2O
+  // Computed from Lennard-Jones
+  sqrtOneOverTc[11] = 3.9062261583604e-02;
+  sqrtAsti[11] = 8.4274889632487e+04;
+  Bi[11] = 7.9341968505345e-01;
+  Fomega[11] = 4.8508000000000e-01;
+
+  // species 12: N2
+  // Imported from NIST
+  sqrtOneOverTc[12] = 8.9019282240563e-02;
+  sqrtAsti[12] = 4.2022983929562e+04;
+  Bi[12] = 9.5560052221563e-01;
+  Fomega[12] = 5.4259343186608e-01;
 }
 
 // gauss-jordan solver external routine

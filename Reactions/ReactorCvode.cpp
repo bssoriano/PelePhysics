@@ -65,7 +65,7 @@ ReactorCvode::initCvode(
   int flag = CVodeSetUserData(a_cvode_mem, static_cast<void*>(a_udata));
 
   // Call CVodeInit to initialize the integrator memory and specify the user's
-  // right hand side function, the inital time, and initial dependent variable
+  // right hand side function, the initial time, and initial dependent variable
   // vector a_y.
   flag = CVodeInit(a_cvode_mem, cF_RHS, a_time, a_y);
   if (utils::check_flag(&flag, "CVodeInit", 1)) {
@@ -100,7 +100,7 @@ ReactorCvode::initCvode(
     }
 #else
     amrex::Abort(
-      "Shoudn't be there. solve_type sparse_direct only available with CUDA");
+      "Shouldn't be there. solve_type sparse_direct only available with CUDA");
 #endif
   } else if (a_udata->solve_type == cvode::customDirect) {
 #if defined(AMREX_USE_CUDA)
@@ -120,7 +120,7 @@ ReactorCvode::initCvode(
     }
 #else
     amrex::Abort(
-      "Shoudn't be there. solve_type custom_direct only available with CUDA");
+      "Shouldn't be there. solve_type custom_direct only available with CUDA");
 #endif
   } else if (a_udata->solve_type == cvode::magmaDirect) {
 #ifdef PELE_USE_MAGMA
@@ -136,7 +136,7 @@ ReactorCvode::initCvode(
     }
 #else
     amrex::Abort(
-      "Shoudn't be there. solve_type magma_direct only available with "
+      "Shouldn't be there. solve_type magma_direct only available with "
       "PELE_USE_MAGMA = TRUE");
 #endif
   } else if (a_udata->solve_type == cvode::GMRES) {
@@ -242,7 +242,7 @@ ReactorCvode::initCvode(
   }
 
   // Call CVodeInit to initialize the integrator memory and specify the user's
-  // right hand side function, the inital time, and initial dependent variable
+  // right hand side function, the initial time, and initial dependent variable
   // vector a_y.
   flag = CVodeInit(a_cvode_mem, cF_RHS, a_time, a_y);
   if (utils::check_flag(&flag, "CVodeInit", 1) != 0) {
@@ -633,7 +633,7 @@ ReactorCvode::checkCvodeOptions(
 #endif
   }
 
-  // Print additionnal information
+  // Print additional information
   if (a_precond_type == cvode::sparseSimpleAJac) {
     int nJdata = 0;
     const int HP =
@@ -1254,10 +1254,10 @@ ReactorCvode::react(
 #endif
 
   // Set of SUNDIALs objects needed for Cvode
-  SUNMatrix A = nullptr;                      // Jacobian matrix
-  CVODEUserData* udata = new CVODEUserData{}; // Userdata container
-  SUNNonlinearSolver NLS = nullptr;           // Non-linear solver
-  SUNLinearSolver LS = nullptr;               // Linear solver
+  SUNMatrix A = nullptr;             // Jacobian matrix
+  auto* udata = new CVODEUserData{}; // Userdata container
+  SUNNonlinearSolver NLS = nullptr;  // Non-linear solver
+  SUNLinearSolver LS = nullptr;      // Linear solver
 
   // Call CVodeCreate to create the solver memory and specify the Backward
   // Differentiation Formula and the use of a Newton iteration
@@ -1471,10 +1471,10 @@ ReactorCvode::react(
   amrex::Real CvodeActual_time_final = 0.0;
 
   // Set of SUNDIALs objects needed for Cvode
-  SUNMatrix A = nullptr;                      // Jacobian matrix
-  CVODEUserData* udata = new CVODEUserData{}; // Userdata container
-  SUNNonlinearSolver NLS = nullptr;           // Non-linear solver
-  SUNLinearSolver LS = nullptr;               // Linear solver
+  SUNMatrix A = nullptr;             // Jacobian matrix
+  auto* udata = new CVODEUserData{}; // Userdata container
+  SUNNonlinearSolver NLS = nullptr;  // Non-linear solver
+  SUNLinearSolver LS = nullptr;      // Linear solver
 
   // Call CVodeCreate to create the solver memory and specify the Backward
   // Differentiation Formula and the use of a Newton iteration
@@ -1733,10 +1733,9 @@ ReactorCvode::freeUserData(CVODEUserData* data_wk)
     delete[] data_wk->Jdata;
     SUNMatDestroy(A);
     SUNMatDestroy((data_wk->PS)[0]);
-    delete[](data_wk->PS);
+    delete[] (data_wk->PS);
 #endif
   } else if (data_wk->solve_type == cvode::customDirect) {
-    //    SUNMatDestroy(A);
     SUNMatDestroy(data_wk->PSc);
   }
 
@@ -1748,13 +1747,13 @@ ReactorCvode::freeUserData(CVODEUserData* data_wk)
       SUNDlsMat_destroyArray((data_wk->pivot)[i][i]);
     }
     for (int i = 0; i < data_wk->ncells; ++i) {
-      delete[](data_wk->P)[i];
-      delete[](data_wk->Jbd)[i];
-      delete[](data_wk->pivot)[i];
+      delete[] (data_wk->P)[i];
+      delete[] (data_wk->Jbd)[i];
+      delete[] (data_wk->pivot)[i];
     }
-    delete[](data_wk->P);
-    delete[](data_wk->Jbd);
-    delete[](data_wk->pivot);
+    delete[] (data_wk->P);
+    delete[] (data_wk->Jbd);
+    delete[] (data_wk->pivot);
   } else if (data_wk->precond_type == cvode::sparseSimpleAJac) {
 #ifdef PELE_USE_KLU
     delete[] data_wk->colPtrs;

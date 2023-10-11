@@ -154,8 +154,8 @@ DiagPDF::MFVecMin(
 {
   // TODO: skip fine-covered in search
   amrex::Real mmin{AMREX_REAL_MAX};
-  for (int lev = 0; lev < a_state.size(); ++lev) {
-    mmin = std::min(mmin, a_state[lev]->min(comp, 0, true));
+  for (const auto* st : a_state) {
+    mmin = std::min(mmin, st->min(comp, 0, true));
   }
 
   amrex::ParallelDescriptor::ReduceRealMin(mmin);
@@ -168,8 +168,8 @@ DiagPDF::MFVecMax(
 {
   // TODO: skip fine-covered in search
   amrex::Real mmax{AMREX_REAL_LOWEST};
-  for (int lev = 0; lev < a_state.size(); ++lev) {
-    mmax = std::max(mmax, a_state[lev]->max(comp, 0, true));
+  for (const auto* st : a_state) {
+    mmax = std::max(mmax, st->max(comp, 0, true));
   }
 
   amrex::ParallelDescriptor::ReduceRealMax(mmax);
@@ -193,22 +193,25 @@ DiagPDF::writePDFToFile(
   diagfile = diagfile + ".dat";
 
   if (amrex::ParallelDescriptor::IOProcessor()) {
-
     std::ofstream pdfFile;
     pdfFile.open(diagfile.c_str(), std::ios::out);
-    int prec = 8;
-    int width = 16;
+    const int prec = 8;
+    const int width = 16;
+    amrex::Vector<int> widths(2, width);
 
     amrex::Real binWidth = (m_highBnd - m_lowBnd) / (m_nBins);
 
-    pdfFile << std::setw(width) << m_fieldName << " " << std::setw(width)
-            << m_fieldName + "_PDF"
+    widths[0] = std::max(width, static_cast<int>(m_fieldName.length()) + 1);
+    widths[1] = std::max(width, static_cast<int>(m_fieldName.length()) + 5);
+    pdfFile << std::setw(widths[0]) << m_fieldName << " "
+            << std::setw(widths[1]) << m_fieldName + "_PDF"
             << "\n";
 
     for (int i{0}; i < a_pdf.size(); ++i) {
-      pdfFile << std::setw(width) << std::setprecision(prec) << std::scientific
+      pdfFile << std::setw(widths[0]) << std::setprecision(prec)
+              << std::scientific
               << m_lowBnd + (static_cast<amrex::Real>(i) + 0.5) * binWidth
-              << " " << std::setw(width) << std::setprecision(prec)
+              << " " << std::setw(widths[1]) << std::setprecision(prec)
               << std::scientific << a_pdf[i] / a_sum / binWidth << "\n";
     }
 

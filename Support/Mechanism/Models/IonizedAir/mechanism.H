@@ -68,6 +68,7 @@ CKINDX(int& mm, int& kk, int& ii, int& nfit)
 }
 
 //  inverse molecular weights
+#ifdef AMREX_USE_GPU
 AMREX_GPU_CONSTANT const amrex::Real global_imw[5] = {
   0.0312519532470779,    // O2
   0.0356964374955379,    // N2
@@ -75,6 +76,7 @@ AMREX_GPU_CONSTANT const amrex::Real global_imw[5] = {
   0.0625017634094834,    // On
   0.0312514174667246,    // O2n
 };
+#endif
 const amrex::Real h_global_imw[5] = {
   0.0312519532470779,    // O2
   0.0356964374955379,    // N2
@@ -84,6 +86,7 @@ const amrex::Real h_global_imw[5] = {
 };
 
 //  molecular weights
+#ifdef AMREX_USE_GPU
 AMREX_GPU_CONSTANT const amrex::Real global_mw[5] = {
   31.998000, // O2
   28.014000, // N2
@@ -91,6 +94,7 @@ AMREX_GPU_CONSTANT const amrex::Real global_mw[5] = {
   15.999549, // On
   31.998549, // O2n
 };
+#endif
 const amrex::Real h_global_mw[5] = {
   31.998000, // O2
   28.014000, // N2
@@ -1245,7 +1249,7 @@ CKMMWC(const amrex::Real c[], amrex::Real& wtm)
   for (int id = 0; id < 5; ++id) {
     sumC += c[id];
   }
-  //  CK provides no guard against divison by zero
+  //  CK provides no guard against division by zero
   wtm = W / sumC;
 }
 
@@ -2277,6 +2281,51 @@ GET_CRITPARAMS(
           (wt[4] * wt[4]);
   bi[4] = 0.855 * avogadro * 1e-24 * SIG[4] * SIG[4] * SIG[4] / (wt[4]);
   acentric_i[4] = 0.0;
+}
+
+// compute the critical parameter quantities for each species for SRK
+AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE void
+GET_CRITPARAMS_SRK(
+  amrex::Real* sqrtOneOverTc,
+  amrex::Real* sqrtAsti,
+  amrex::Real* Bi,
+  amrex::Real* Fomega)
+{
+
+  // species 0: O2
+  // Imported from NIST
+  sqrtOneOverTc[0] = 8.0430717653241e-02;
+  sqrtAsti[0] = 3.6980081924740e+04;
+  Bi[0] = 6.9005216444999e-01;
+  Fomega[0] = 5.1945301904908e-01;
+
+  // species 1: N2
+  // Imported from NIST
+  sqrtOneOverTc[1] = 8.9019282240563e-02;
+  sqrtAsti[1] = 4.2022983929562e+04;
+  Bi[1] = 9.5560052221563e-01;
+  Fomega[1] = 5.4259343186608e-01;
+
+  // species 2: E
+  // Computed from Lennard-Jones
+  sqrtOneOverTc[2] = 2.9899408206870e-02;
+  sqrtAsti[2] = 7.7623333318521e+12;
+  Bi[2] = 7.2051661156636e+10;
+  Fomega[2] = 4.8508000000000e-01;
+
+  // species 3: On
+  // Computed from Lennard-Jones
+  sqrtOneOverTc[3] = 9.7460146948181e-02;
+  sqrtAsti[3] = 4.2498698800541e+04;
+  Bi[3] = 6.6927940000755e-01;
+  Fomega[3] = 4.8508000000000e-01;
+
+  // species 4: O2n
+  // Computed from Lennard-Jones
+  sqrtOneOverTc[4] = 8.4114315417892e-02;
+  sqrtAsti[4] = 3.4717518285005e+04;
+  Bi[4] = 6.6536782042076e-01;
+  Fomega[4] = 4.8508000000000e-01;
 }
 
 // gauss-jordan solver external routine

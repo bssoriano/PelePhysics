@@ -63,20 +63,24 @@ CKINDX(int& mm, int& kk, int& ii, int& nfit)
 }
 
 //  inverse molecular weights
+#ifdef AMREX_USE_GPU
 AMREX_GPU_CONSTANT const amrex::Real global_imw[2] = {
   0.0356964374955379, // N2
   0.0356964374955379, // N2a
 };
+#endif
 const amrex::Real h_global_imw[2] = {
   0.0356964374955379, // N2
   0.0356964374955379, // N2a
 };
 
 //  molecular weights
+#ifdef AMREX_USE_GPU
 AMREX_GPU_CONSTANT const amrex::Real global_mw[2] = {
   28.014000, // N2
   28.014000, // N2a
 };
+#endif
 const amrex::Real h_global_mw[2] = {
   28.014000, // N2
   28.014000, // N2a
@@ -911,7 +915,7 @@ CKMMWC(const amrex::Real c[], amrex::Real& wtm)
   for (int id = 0; id < 2; ++id) {
     sumC += c[id];
   }
-  //  CK provides no guard against divison by zero
+  //  CK provides no guard against division by zero
   wtm = W / sumC;
 }
 
@@ -1722,6 +1726,30 @@ GET_CRITPARAMS(
           (wt[1] * wt[1]);
   bi[1] = 0.855 * avogadro * 1e-24 * SIG[1] * SIG[1] * SIG[1] / (wt[1]);
   acentric_i[1] = 0.0;
+}
+
+// compute the critical parameter quantities for each species for SRK
+AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE void
+GET_CRITPARAMS_SRK(
+  amrex::Real* sqrtOneOverTc,
+  amrex::Real* sqrtAsti,
+  amrex::Real* Bi,
+  amrex::Real* Fomega)
+{
+
+  // species 0: N2
+  // Imported from NIST
+  sqrtOneOverTc[0] = 8.9019282240563e-02;
+  sqrtAsti[0] = 4.2022983929562e+04;
+  Bi[0] = 9.5560052221563e-01;
+  Fomega[0] = 5.4259343186608e-01;
+
+  // species 1: N2a
+  // Computed from Lennard-Jones
+  sqrtOneOverTc[1] = 8.8267930269877e-02;
+  sqrtAsti[1] = 4.0492641031864e+04;
+  Bi[1] = 8.7262480899350e-01;
+  Fomega[1] = 4.8508000000000e-01;
 }
 
 // gauss-jordan solver external routine

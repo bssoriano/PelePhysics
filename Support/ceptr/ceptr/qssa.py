@@ -22,7 +22,7 @@ def process_qss(fname, nqssa, visualize, method):
     # Species
     with open(nqssa) as f:
         f_non_qssa_species = yaml.safe_load(f)
-        # Make sure the species are not interepreted as boolean
+        # Make sure the species are not interpreted as boolean
         if (
             False in f_non_qssa_species["species"]
             or True in f_non_qssa_species["species"]
@@ -128,9 +128,7 @@ def main():
     group.add_argument(
         "-lq", "--lst_qss", help="QSS mechanism directory file list", type=str
     )
-    parser.add_argument(
-        "-n", "--nqssa", help="Non-QSSA species list", type=str
-    )
+    parser.add_argument("-n", "--nqssa", help="Non-QSSA species list", type=str)
     parser.add_argument(
         "-m",
         "--method",

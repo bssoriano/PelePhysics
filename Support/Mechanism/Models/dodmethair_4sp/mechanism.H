@@ -68,12 +68,14 @@ CKINDX(int& mm, int& kk, int& ii, int& nfit)
 }
 
 //  inverse molecular weights
+#ifdef AMREX_USE_GPU
 AMREX_GPU_CONSTANT const amrex::Real global_imw[4] = {
   0.0058706117177410, // NC12H26
   0.0623324814560868, // CH4
   0.0312519532470779, // O2
   0.0356964374955379, // N2
 };
+#endif
 const amrex::Real h_global_imw[4] = {
   0.0058706117177410, // NC12H26
   0.0623324814560868, // CH4
@@ -82,12 +84,14 @@ const amrex::Real h_global_imw[4] = {
 };
 
 //  molecular weights
+#ifdef AMREX_USE_GPU
 AMREX_GPU_CONSTANT const amrex::Real global_mw[4] = {
   170.340000, // NC12H26
   16.043000,  // CH4
   31.998000,  // O2
   28.014000,  // N2
 };
+#endif
 const amrex::Real h_global_mw[4] = {
   170.340000, // NC12H26
   16.043000,  // CH4
@@ -1213,7 +1217,7 @@ CKMMWC(const amrex::Real c[], amrex::Real& wtm)
   for (int id = 0; id < 4; ++id) {
     sumC += c[id];
   }
-  //  CK provides no guard against divison by zero
+  //  CK provides no guard against division by zero
   wtm = W / sumC;
 }
 
@@ -2155,6 +2159,44 @@ GET_CRITPARAMS(
           (28.013400 * 28.013400 * 33.958000);
   bi[3] = 0.08664 * Rcst * Tci[3] / (28.013400 * 33.958000);
   acentric_i[3] = 0.037200;
+}
+
+// compute the critical parameter quantities for each species for SRK
+AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE void
+GET_CRITPARAMS_SRK(
+  amrex::Real* sqrtOneOverTc,
+  amrex::Real* sqrtAsti,
+  amrex::Real* Bi,
+  amrex::Real* Fomega)
+{
+
+  // species 0: NC12H26
+  // Computed from Lennard-Jones
+  sqrtOneOverTc[0] = 3.1014444518975e-02;
+  sqrtAsti[0] = 5.1456132490395e+04;
+  Bi[0] = 1.0578236621500e+00;
+  Fomega[0] = 4.8508000000000e-01;
+
+  // species 1: CH4
+  // Imported from NIST
+  sqrtOneOverTc[1] = 7.2440948474968e-02;
+  sqrtAsti[1] = 9.5215046085708e+04;
+  Bi[1] = 1.8605203320660e+00;
+  Fomega[1] = 5.0213035482700e-01;
+
+  // species 2: O2
+  // Imported from NIST
+  sqrtOneOverTc[2] = 8.0430717653241e-02;
+  sqrtAsti[2] = 3.6980081924740e+04;
+  Bi[2] = 6.9005216444999e-01;
+  Fomega[2] = 5.1945301904908e-01;
+
+  // species 3: N2
+  // Imported from NIST
+  sqrtOneOverTc[3] = 8.9019282240563e-02;
+  sqrtAsti[3] = 4.2022983929562e+04;
+  Bi[3] = 9.5560052221563e-01;
+  Fomega[3] = 5.4259343186608e-01;
 }
 
 // gauss-jordan solver external routine
