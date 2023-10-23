@@ -69,10 +69,10 @@ def qss_sorted_phase_space(mechanism, species_info, reaction, reagents, syms=Non
                         * int(order)
                     )
                 else:
-                    conc = (
-                        f"pow(sc_qss[{species_info.ordered_idx_map[symbol] - n_species}],"
-                        f" {float(order):f})"
+                    sc_str = (
+                        "sc_qss[{species_info.ordered_idx_map[symbol] - n_species}]"
                     )
+                    conc = f"pow(std::max({sc_str}, 1e-12),{float(order):f})"
                 if record_symbolic_operations:
                     conc_smp = pow(
                         syms.sc_qss_smp[
@@ -100,10 +100,16 @@ def qss_sorted_phase_space(mechanism, species_info, reaction, reagents, syms=Non
                             * syms.sc_smp[species_info.ordered_idx_map[symbol]]
                         )
                 else:
-                    conc = (
-                        f"pow(sc[{species_info.ordered_idx_map[symbol]}],"
-                        f" {float(order):f})"
-                    )
+                    if order.is_integer():
+                        conc = (
+                            f"pow(sc[{species_info.ordered_idx_map[symbol]}],"
+                            f" {float(order):f})"
+                        )
+                    else:
+                        conc = (
+                            f"pow(std::max(sc[{species_info.ordered_idx_map[symbol]}]"
+                            f", 1e-12), {float(order):f})"
+                        )
                     if record_symbolic_operations:
                         conc_smp = pow(
                             syms.sc_smp[species_info.ordered_idx_map[symbol]],
@@ -183,7 +189,7 @@ def fkc_conv_inv(self, mechanism, reaction, syms=None):
                 if record_symbolic_operations:
                     conversion_smp *= syms.refCinv_smp * syms.refCinv_smp
             else:
-                conversion = "*".join([f"pow(refCinv, {dim:f})"])
+                conversion = "*".join([f"pow(std::max(refCinv, 1e-12), {dim:f})"])
                 if record_symbolic_operations:
                     conversion_smp *= syms.refCinv_smp**dim
     else:
@@ -192,7 +198,10 @@ def fkc_conv_inv(self, mechanism, reaction, syms=None):
             if record_symbolic_operations:
                 conversion_smp *= syms.refC_smp
         else:
-            conversion = "*".join([f"pow(refC, {abs(dim):f})"])
+            if dim.is_integer():
+                conversion = "*".join([f"pow(refC, {abs(dim):f})"])
+            else:
+                conversion = "*".join([f"pow(std::max(refC, 1e-12), {abs(dim):f})"])
             if record_symbolic_operations:
                 conversion_smp *= syms.refC_smp**dim
 
@@ -221,12 +230,18 @@ def kc_conv(mechanism, reaction):
             if dim == 2.0:
                 conversion = "*".join(["(refC * refC)"])
             else:
-                conversion = "*".join([f"pow(refC,{dim:f})"])
+                if dim.is_integer():
+                    conversion = "*".join([f"pow(refC,{dim:f})"])
+                else:
+                    conversion = "*".join([f"pow(std::max(refC, 1e-12),{dim:f})"])
     else:
         if dim == -1.0:
             conversion = "*".join(["refCinv"])
         else:
-            conversion = "*".join([f"pow(refCinv,{abs(dim):f})"])
+            if dim.is_integer():
+                conversion = "*".join([f"pow(refCinv,{abs(dim):f})"])
+            else:
+                conversion = "*".join([f"pow(std::max(refCinv, 1e-12),{abs(dim):f})"])
 
     return conversion
 

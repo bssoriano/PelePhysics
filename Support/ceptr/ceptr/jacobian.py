@@ -1454,7 +1454,7 @@ def dphase_space(mechanism, species_info, reagents, r, reaction_orders, syms):
                             )
                         else:
                             idx = species_info.ordered_idx_map[symbol]
-                            conc = f"pow(sc[{idx}],{exponent:f})"
+                            conc = f"pow(std::max(sc[{idx}], 1e-12),{exponent:f})"
                     phi += [conc]
                 elif order < 1:
                     phi += [f"{order:f}"]
@@ -1472,8 +1472,8 @@ def dphase_space(mechanism, species_info, reagents, r, reaction_orders, syms):
                         )
                     else:
                         conc = (
-                            f"pow(sc[{species_info.ordered_idx_map[symbol]}],"
-                            f" {order:f})"
+                            f"pow(std::max(sc[{species_info.ordered_idx_map[symbol]}],"
+                            f" 1e-12), {order:f})"
                         )
                 phi += [conc]
         # Symbol is in qssa_species_list
@@ -1499,7 +1499,7 @@ def dphase_space(mechanism, species_info, reagents, r, reaction_orders, syms):
                                 species_info.ordered_idx_map[symbol]
                                 - species_info.n_species
                             )
-                            conc = f"pow(sc_qss[{idx}],{exponent:f})"
+                            conc = f"pow(std::max(sc_qss[{idx}], 1e-12),{exponent:f})"
                     phi += [conc]
             else:
                 if order == 1.0:
@@ -1515,7 +1515,7 @@ def dphase_space(mechanism, species_info, reagents, r, reaction_orders, syms):
                             species_info.ordered_idx_map[symbol]
                             - species_info.n_species
                         )
-                        conc = f"pow(sc_qss[{idx}], {order:f})"
+                        conc = f"pow(std::max(sc_qss[{idx}], 1e-12), {order:f})"
                 phi += [conc]
 
     if phi:
