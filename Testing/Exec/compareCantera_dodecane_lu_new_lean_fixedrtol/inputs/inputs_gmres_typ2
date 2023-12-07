@@ -1,0 +1,41 @@
+ncells = 1 1 1
+max_grid_size  = 1
+fuel_name = NC12H26
+reactFormat = Array4
+#reactFormat = 1dArray
+chem_integrator = "ReactorCvode"
+
+ode.dt  = 0.1
+ode.ndt = 1000
+ode.ode_ncells = 1
+ode.reactor_type  = 1 # 1=full e, 2=full h
+ode.verbose = 0
+ode.use_typ_vals = 0
+ode.rtol = 1e-7
+ode.atol = 1e-7
+ode.use_typ_vals = 1
+ode.typ_vals= 1e-10 7.076662289e-10 1e-10 4.963150352e-10 1e-10 3.088358693e-05 0.000247232294 1e-10 1e-10 8.238110072e-08 9.451394211e-05 1.172430576e-09 0.000520967247 0.0001848524826 0.0002107499158 4.464972739e-05 3.64902631e-07 1e-10 4.472002989e-08 5.110166195e-07 1.717735801e-10 1e-10 1.110255547e-08 1e-10 1e-10 1e-10 1e-10 1e-10 1e-10 1e-10 1e-10 1e-10 1e-10 1e-10 0.002156942045 1616.805795 
+
+# Select Linear solver for CVODE Newton direction
+# Options are [CPU] dense_direct / denseAJ_direct / sparse_direct / custom_direct / GMRES / precGMRES
+#             [GPU] sparse_direct / magma_direct / GMRES / precGMRES
+cvode.solve_type = GMRES
+
+# If solve_type = precGMRES -> select preconditioner
+cvode.precond_type = dense_simplified_AJacobian
+cvode.max_order = 4
+
+ode.implicit_solve = 1
+ode.use_erkstep    = 0
+
+amrex.fpe_trap_invalid = 1
+amrex.fpe_trap_zero = 1
+amrex.fpe_trap_overflow = 1
+
+
+# 1013250.0 * patm
+hr.press = 5066250.0
+hr.t0 = 600
+hr.equiv_ratio = 7.928571428571429
+hr.outputFolderHR = ./
+
