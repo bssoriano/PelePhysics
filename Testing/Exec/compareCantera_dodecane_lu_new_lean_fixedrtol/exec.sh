@@ -11,7 +11,7 @@ rm -r gmresTyp*
 rm -r denseDir*
  
 # Find first eyypecutable name available
-#make COMP=llvm TPL
+make COMP=llvm TPL
 make COMP=llvm -j 8
 execname=`find . -name "Pele*.ex" | head -1`
 
@@ -28,13 +28,10 @@ fi
 if [[ -f "log" ]]; then
     rm log
 fi
-#$execname inputs/inputs_ref
+$execname inputs/inputs_ref
 
-#declare -a ndtArray=(100 500 1000 5000 10000 50000 100000 400000 800000 3200000 10000000 25600000)
 declare -a ndtArray=(100 500 1000 5000 10000 50000 100000 400000 800000 3200000 10000000)
 declare -a tolArray=(1e-6 1e-8 1e-10 1e-12 1e-14)
-#declare -a ndtArray=(1000 10000 400000)
-#declare -a tolArray=(1e-6 1e-8 1e-10)
 
 for ndt in ${ndtArray[@]}; do
     for tol in ${tolArray[@]}; do
@@ -57,17 +54,3 @@ for ndt in ${ndtArray[@]}; do
 done
 
 
-#$execname inputs/inputs_dense_direct
-#$execname inputs/inputs_gmres
-#$execname inputs/inputs_gmres_typ ode.ndt=800000
-#$execname inputs/inputs_gmres_typ2
-
-
-
-#cd compareCantera/canteraSim
-#python homoReact_dodecane_lu.py
-#cd ../..
-##conda deactivate
-#
-#cd compareCantera
-#python compareResults.py
