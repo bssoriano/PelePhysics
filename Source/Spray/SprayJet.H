@@ -70,18 +70,27 @@ public:
   // Call this before using spray jet
   bool jet_active(const amrex::Real time) const
   {
-    if (m_jetDia < 0.) {
-      amrex::Abort("Jet diameter is not set");
-    } else if (m_avgDia < 0.) {
-      amrex::Abort("Average droplet diameter is not set");
-    } else if (m_jetT < 0.) {
-      amrex::Abort("Droplet temperature is not set");
-    }
-    bool check = true;
-    if (time < m_startTime || time > m_endTime) {
-      check = false;
-    }
-    return check;
+	  if(!m_use_Fluentdpmfile)
+	  {
+		  if (m_jetDia < 0.)
+		  {
+			  amrex::Abort("Jet diameter is not set");
+		  }
+		  else if (m_avgDia < 0.)
+		  {
+			  amrex::Abort("Average droplet diameter is not set");
+		  }
+		  else if (m_jetT < 0.)
+		  {
+			  amrex::Abort("Droplet temperature is not set");
+		  }
+	  }
+	  bool check = true;
+	  if (time < m_startTime || time > m_endTime)
+	  {
+		  check = false;
+	  }
+	  return check;
   }
 
   inline bool hollow_spray() const { return m_hollowSpray; }
@@ -92,6 +101,17 @@ public:
   amrex::Real get_avg_T() const { return m_jetT; }
 
   amrex::Real get_avg_Y(const int spf) const { return m_jetY[spf]; }
+
+  bool use_FluentDPMFile(){return m_use_Fluentdpmfile;}
+
+  void set_initial_injection_flow_time(amrex::Real time)
+  {
+	  if(m_flow_t_initial_injection==-1.0)
+	  	{
+	  		m_flow_t_initial_injection=time;
+	  		m_cur_inj_flw_time=time;
+	  	}
+  }
 
   void set_jet_vel(amrex::Real jet_vel) { m_jetVel = jet_vel; }
 
@@ -139,6 +159,15 @@ public:
     }
   }
 
+  void set_override_injection_plane(int dir,amrex::Real loc)
+  {
+	  m_override_inj_plane_dir=dir;
+	  m_override_inj_plane_loc=loc;
+  }
+
+  int get_override_injection_plane_dir(){return m_override_inj_plane_dir;}
+  amrex::Real get_override_injection_plane_loc(){return m_override_inj_plane_loc;}
+
   void set_start_time(amrex::Real start_time) { m_startTime = start_time; }
   void set_end_time(amrex::Real end_time) { m_endTime = end_time; }
   void set_num_ppp(amrex::Real num_ppp) { m_numPPP = num_ppp; }
@@ -162,6 +191,7 @@ public:
      @param[out] T_part Droplet temperature
      @param[out] Y_part Droplet mass fractions
   */
+
   virtual bool get_new_particle(
     const amrex::Real time,
     const amrex::Real& phi_radial,
@@ -172,6 +202,8 @@ public:
     amrex::Real& dia_part,
     amrex::Real& T_part,
     amrex::Real* Y_part);
+
+  virtual bool get_new_particle(amrex::Real* Y_part);
 
   /**
      Solve for transformed location and velocity based on provided angles and
@@ -265,8 +297,27 @@ public:
   amrex::Real m_totalInjMass = 0.;
   amrex::Real m_totalInjTime = 0.;
 
+  bool m_use_Fluentdpmfile;
+  std::string m_FluentDPMFile;
+  long int m_dpm_num_of_time_instants=0;
+
+  amrex::Real m_cur_inj_dpm_time=0.0;
+  amrex::Real m_nxt_inj_dpm_time=0.0;
+  amrex::Real m_cur_inj_flw_time=0.0;
+  amrex::Real m_nxt_inj_flw_time=0.0;
+
+
 protected:
   // Member data
+  //Adding the following variables to include dpm injection from external file
+  int m_override_inj_plane_dir=-1;
+  amrex::Real m_override_inj_plane_loc=0.0;
+
+  amrex::Real m_dpm_t_initial=0.0;
+  amrex::Real m_dpm_t_final=-1.0;
+  amrex::Real m_dpm_t_initial_injection=0.0;
+  amrex::Real m_flow_t_initial_injection=-1.0;		//Start injection as soon as iteration starts
+
   std::string m_jetName;
   amrex::RealVect m_norm = amrex::RealVect::TheZeroVector();
   amrex::RealVect m_cent = amrex::RealVect::TheZeroVector();

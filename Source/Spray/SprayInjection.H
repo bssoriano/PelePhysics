@@ -7,6 +7,188 @@
  problem-specific SprayParticlesInitInsert.cpp file, when necessary.
 */
 
+//Added by Sreejith for A74 simulation
+
+std::ifstream& GotoLine(std::ifstream& file, long int num){
+    file.seekg(std::ios::beg);
+    for(int i=0; i < num - 1; ++i){
+        file.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+    }
+    return file;
+}
+
+void transform_to_new_cs(amrex::Real vec[3])
+{
+	//To keep it simple, for now I am only transforming coordinates keeping A74 simulations in mind.
+	//TODO write a generic tranformation subroutine
+	amrex::Real x,y,z;
+	x=vec[0];
+	y=vec[1];
+	z=vec[2];
+
+	vec[0]=-z;
+	vec[1]=y;
+	vec[2]=x;
+}
+
+
+void
+SprayParticleContainer::sprayInjectionfromDPMFile(
+		  const amrex::Real time,
+		  SprayJet* spray_jet,
+		  const amrex::Real sim_dt,
+		  const int level)
+{
+	if (!spray_jet->jet_active(time) || sim_dt <= 0.)
+	{
+		return;
+	}
+
+	int curProc = amrex::ParallelDescriptor::MyProc();
+	int injProc = spray_jet->Proc();
+	if (curProc != injProc)
+	{
+		return;
+	}
+
+	amrex::Real dt = sim_dt;
+	const amrex::Real Pi_six = M_PI / 6.;
+	SprayUnits SPU;
+	const SprayData* fdat = m_sprayData;
+
+	spray_jet->set_initial_injection_flow_time(time-sim_dt);
+
+	if(time>=spray_jet->m_cur_inj_flw_time)
+	{
+		long int current_dpm_time_lineno=0;
+		long int next_dpm_time_lineno=0;
+		long int ln;
+		amrex::Real dummy_time=-1;
+		amrex::Real part_loc[3];
+		amrex::Real part_vel[3];
+		amrex::Real dia,temperature,parcel_mass,particle_mass,nppp;
+		long int dummy_line_no;
+		std::ifstream is_dpm(spray_jet->m_FluentDPMFile, std::ios::in);
+		is_dpm>>dummy_line_no;		//Reading total number of time instants to a dummy variable
+
+		long int ctr=0;
+		while(abs(dummy_time-spray_jet->m_cur_inj_dpm_time)>1e-8 && ctr<=spray_jet->m_dpm_num_of_time_instants)
+		{
+			is_dpm>>dummy_time>>dummy_line_no;
+			ctr++;
+		}
+		if(dummy_time==spray_jet->m_cur_inj_dpm_time)
+		{
+			current_dpm_time_lineno=dummy_line_no;
+		}
+		is_dpm>>spray_jet->m_nxt_inj_dpm_time>>next_dpm_time_lineno;
+		is_dpm.close();
+
+		//Now reading the particle data
+		std::ifstream is_dpm1(spray_jet->m_FluentDPMFile, std::ios::in);
+		GotoLine(is_dpm1,current_dpm_time_lineno);
+		for(ln=0;ln<next_dpm_time_lineno-current_dpm_time_lineno;ln++)
+		{
+			amrex::Real pmov1 = amrex::Random();				//Random number to make sure particle is advanced a little bit downstream
+			amrex::Real pmov = amrex::Random();
+			int num_ppp=2;										//number of particles per parcel
+			amrex::Real Y_part[SPRAY_FUEL_NUM];					//Spray fuel mass fraction
+			amrex::Real rho_part = 0.;							//density of particle
+			bool set_part_Y=false;
+
+
+			//Reading parcel/particle details from dpm input file
+			is_dpm1>>dummy_time>>part_loc[0]>>part_loc[1]>>part_loc[2]>>part_vel[0]>>part_vel[1]>>part_vel[2]>>dia>>temperature>>parcel_mass>>particle_mass>>nppp;
+
+
+			amrex::ParticleLocData pld;
+			std::map<std::pair<int, int>, amrex::Gpu::HostVector<ParticleType>> host_particles;
+			ParticleType p;
+			p.id() = ParticleType::NextID();
+			p.cpu() = amrex::ParallelDescriptor::MyProc();
+
+			//Setting particle properties
+			transform_to_new_cs(part_loc);													//Transforming the particle coordinates to A74 coordinate system
+
+			if(spray_jet->get_override_injection_plane_dir()!=-1)							//Overriding dpm input file particle location on a plane with user specified location
+			{
+				part_loc[spray_jet->get_override_injection_plane_dir()]=spray_jet->get_override_injection_plane_loc();
+			}
+
+			for (int dir = 0; dir < AMREX_SPACEDIM; ++dir)									//Setting the particle coordinates
+			{
+				p.pos(dir) = part_loc[dir] + pmov * dt * p.rdata(SprayComps::pstateVel + dir);
+			}
+
+			transform_to_new_cs(part_vel);													//Transforming the particle velocity to A74 coordinate system
+			AMREX_D_TERM(	p.rdata(SprayComps::pstateVel) = (part_vel[0]+pmov1);,			//Setting the particle velocities
+							p.rdata(SprayComps::pstateVel + 1) = (part_vel[1]+pmov1);,
+							p.rdata(SprayComps::pstateVel + 2) = (part_vel[2]+pmov1););
+
+			p.rdata(SprayComps::pstateDia) = dia;											//Setting the particle density
+			p.rdata(SprayComps::pstateT) = temperature;										//Setting the particle temperature
+			set_part_Y =spray_jet->get_new_particle(Y_part);								//Getting particle mass fractions
+			if (SPRAY_FUEL_NUM > 1)															//Setting particle mass fractions
+			{
+				for (int spf = 0; spf < SPRAY_FUEL_NUM; ++spf)
+				{
+					p.rdata(SprayComps::pstateY + spf) = Y_part[spf];
+					rho_part += Y_part[spf] / fdat->rhoL(temperature, spf);
+				}
+				rho_part = 1. / rho_part;
+			}
+			else
+			{
+				rho_part = fdat->rhoL(temperature, 0);
+				p.rdata(SprayComps::pstateY) = 1.;
+			}
+			amrex::Real pmass = particle_mass;												//Setting parcel mass
+
+
+			// If KHRT is used, BM1 is shed mass
+			// If TAB is used, BM1 is y
+			p.rdata(SprayComps::pstateBM1) = 0.;
+			p.rdata(SprayComps::pstateBM2) = 0;
+			p.rdata(SprayComps::pstateFilmHght) = 0.;
+			p.rdata(SprayComps::pstateN0) = 2;
+			p.rdata(SprayComps::pstateNumDens) = 2;
+
+
+			bool where = Where(p, pld);
+			if (!where)
+			{
+				amrex::Abort("Bad injection particle");
+			}
+
+			std::pair<int, int> ind(pld.m_grid, pld.m_tile);
+			host_particles[ind].push_back(p);
+
+			for (auto& kv : host_particles)
+			{
+				auto grid = kv.first.first;
+				auto tile = kv.first.second;
+				const auto& src_tile = kv.second;
+				auto& dst_tile = GetParticles(level)[std::make_pair(grid, tile)];
+				auto old_size = dst_tile.GetArrayOfStructs().size();
+				auto new_size = old_size + src_tile.size();
+				dst_tile.resize(new_size);
+				// Copy the AoS part of the host particles to the GPU
+				amrex::Gpu::copy(	amrex::Gpu::hostToDevice, src_tile.begin(), src_tile.end(),
+				              	  dst_tile.GetArrayOfStructs().begin() + old_size);
+			}
+		}
+		is_dpm1.close();
+		spray_jet->m_cur_inj_flw_time+=time-sim_dt+spray_jet->m_nxt_inj_dpm_time-spray_jet->m_cur_inj_dpm_time;
+		amrex::Print()<<"Injected "<<ln<<" particles. No of species = "<<SPRAY_FUEL_NUM<<" "<<time<<"  "<<sim_dt<<" "<<spray_jet->m_nxt_inj_dpm_time<<" "<<spray_jet->m_cur_inj_dpm_time<<"\n";
+		spray_jet->m_cur_inj_dpm_time=spray_jet->m_nxt_inj_dpm_time;
+
+
+		amrex::Print()<<"Next injection time = "<<spray_jet->m_cur_inj_flw_time<<"\n";
+		amrex::Print()<<"Next injection DPM time = "<<spray_jet->m_cur_inj_dpm_time<<"\n";
+
+	}
+}
+
 void
 SprayParticleContainer::sprayInjection(
   const amrex::Real time,
