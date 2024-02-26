@@ -51,18 +51,21 @@ SprayParticleContainer::sprayInjectionfromDPMFile(
 		return;
 	}
 
-	amrex::Real dt = sim_dt;
-	const amrex::Real Pi_six = M_PI / 6.;
-	SprayUnits SPU;
-	const SprayData* fdat = m_sprayData;
-
-	spray_jet->set_initial_injection_flow_time(time-sim_dt);
-
-	if(time>=spray_jet->m_cur_inj_flw_time)
+	if (amrex::ParallelDescriptor::IOProcessor())
 	{
-		long int current_dpm_time_lineno=0;
-		long int next_dpm_time_lineno=0;
-		long int ln;
+		amrex::Real dt = sim_dt;
+
+		const amrex::Real Pi_six = M_PI / 6.;
+		SprayUnits SPU;
+		const SprayData* fdat = m_sprayData;
+
+		spray_jet->set_initial_injection_flow_time(time-sim_dt);
+
+		if(time>=spray_jet->m_cur_inj_flw_time)
+		{
+			long int current_dpm_time_lineno=0;
+			long int next_dpm_time_lineno=0;
+			long int ln;
 		amrex::Real dummy_time=-1;
 		amrex::Real part_loc[3];
 		amrex::Real part_vel[3];
@@ -187,6 +190,9 @@ SprayParticleContainer::sprayInjectionfromDPMFile(
 		amrex::Print()<<"Next injection DPM time = "<<spray_jet->m_cur_inj_dpm_time<<"\n";
 
 	}
+
+	}
+	Redistribute();
 }
 
 void
