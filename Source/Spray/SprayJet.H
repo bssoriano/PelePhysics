@@ -132,6 +132,11 @@ public:
     }
   }
 
+  void set_jet_endtime(amrex::Real end_time)
+  {
+	  m_endTime =end_time;
+  }
+
   void set_jet_cent(amrex::RealVect jet_cent, const amrex::Geometry& geom)
   {
     m_cent = jet_cent;
@@ -163,6 +168,17 @@ public:
   {
 	  m_override_inj_plane_dir=dir;
 	  m_override_inj_plane_loc=loc;
+  }
+
+  void set_dpm_periodic(bool b)
+  {
+	  is_dpm_periodic=b;
+  }
+
+
+  amrex::Real dpm_final_time()
+  {
+	  return m_dpm_t_final;
   }
 
   int get_override_injection_plane_dir(){return m_override_inj_plane_dir;}
@@ -300,11 +316,13 @@ public:
   bool m_use_Fluentdpmfile;
   std::string m_FluentDPMFile;
   long int m_dpm_num_of_time_instants=0;
+  bool is_dpm_periodic=true;
 
   amrex::Real m_cur_inj_dpm_time=0.0;
   amrex::Real m_nxt_inj_dpm_time=0.0;
   amrex::Real m_cur_inj_flw_time=0.0;
   amrex::Real m_nxt_inj_flw_time=0.0;
+  amrex::Real dt_dpm=0.0;
 
 
 protected:
