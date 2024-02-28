@@ -195,7 +195,7 @@ SprayParticleContainer::sprayInjectionfromDPMFile(
 				p.rdata(SprayComps::pstateBM2) = 0;
 				p.rdata(SprayComps::pstateFilmHght) = 0.;
 				p.rdata(SprayComps::pstateN0) = 2;
-				p.rdata(SprayComps::pstateNumDens) = 2;
+				p.rdata(SprayComps::pstateNumDens) = nppp;
 
 
 				bool where = Where(p, pld);
