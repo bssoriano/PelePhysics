@@ -187,6 +187,7 @@ SprayParticleContainer::sprayInjectionfromDPMFile(
 					p.rdata(SprayComps::pstateY) = 1.;
 				}
 				amrex::Real pmass = particle_mass;												//Setting parcel mass
+				spray_jet->m_totalInjMass += parcel_mass;
 
 
 				// If KHRT is used, BM1 is shed mass

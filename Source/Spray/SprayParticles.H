@@ -322,6 +322,8 @@ public:
   bool injectParticles(
     amrex::Real time, amrex::Real dt, int nstep, int level, int finest_level);
 
+  void WriteSprayInjectionTemporal(amrex::Real time,  int nstep, int level);
+
   /// \brief Generalized initializer routine. Calls #InitSprayParticles and
   /// #PostInitRestart
   void SprayInitialize(const std::string& restart_dir = "");
