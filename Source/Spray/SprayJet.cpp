@@ -10,6 +10,8 @@ SprayJet::SprayJet(const std::string& jet_name, const amrex::Geometry& geom)
   std::string ppspray = "spray." + m_jetName;
   amrex::ParmParse ps(ppspray);
 
+
+
   ps.get("read_from_dpm_file", m_use_Fluentdpmfile);
   if(m_use_Fluentdpmfile)
   {
@@ -28,16 +30,16 @@ SprayJet::SprayJet(const std::string& jet_name, const amrex::Geometry& geom)
   		  amrex::Real dummy_dpm_time;
   		  amrex::Print()<<"Using spray particle injection file: "<<m_FluentDPMFile<<"\n";
   		  is_dpm>>m_dpm_num_of_time_instants;
-  		  is_dpm>>m_dpm_t_initial>>dummy_line_no;
+  		  is_dpm>>m_dpm_time_initial>>dummy_line_no;
   		  for(long int i=0;i<m_dpm_num_of_time_instants-1;i++)
   		  {
   			  is_dpm>>dummy_dpm_time>>dummy_line_no;
   		  }
-  		  m_dpm_t_final=dummy_dpm_time;
+  		  m_dpm_time_final=dummy_dpm_time;
 
   		  amrex::Print()<<"Total number of DPM time instants = "<<m_dpm_num_of_time_instants<<"\n";
-  		  amrex::Print()<<"Spray injection initial time = "<<m_dpm_t_initial<<"\n";
-  		  amrex::Print()<<"Spray injection final time = "<<m_dpm_t_final<<"\n";
+  		  amrex::Print()<<"Spray injection initial time = "<<m_dpm_time_initial<<"\n";
+  		  amrex::Print()<<"Spray injection final time = "<<m_dpm_time_final<<"\n";
   	  }
   	  is_dpm.close();
   	  ps.query("m_override_inj_plane_dir",m_override_inj_plane_dir);
@@ -45,14 +47,17 @@ SprayJet::SprayJet(const std::string& jet_name, const amrex::Geometry& geom)
   	  {
   		  amrex::Abort("Override injection plane direction should be -1,0,1 or 2");
   	  }
+  	  ps.query("m_rstrt_Fltdpmsim_from_nonFltDPMChckPointFile",m_rstrt_Fltdpmsim_from_nonFltDPMChckPointFile);
   	  ps.query("m_override_inj_plane_loc",m_override_inj_plane_loc);
   	  ps.query("is_dpm_periodic",is_dpm_periodic);
 
   	  ps.query("start_time", m_startTime);
   	  ps.query("end_time", m_endTime);
-  	  ps.get("initial_injection_dpm_time",m_dpm_t_initial_injection);
-  	  ps.get("initial_injection_flow_time",m_flow_t_initial_injection);
-  	  m_cur_inj_dpm_time=m_dpm_t_initial_injection;
+  	  ps.get("initial_injection_dpm_time",m_dpm_time_initial_injection);
+  	  ps.get("initial_injection_flow_time",m_flow_time_initial_injection);
+  	  m_cur_inj_dpm_time=m_dpm_time_initial_injection;
+  	  m_cur_inj_flw_time=m_flow_time_initial_injection;
+
 
   	  if (SPRAY_FUEL_NUM == 1)
   	  {

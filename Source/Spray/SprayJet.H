@@ -106,11 +106,25 @@ public:
 
   void set_initial_injection_flow_time(amrex::Real time)
   {
-	  if(m_flow_t_initial_injection==-1.0)
-	  	{
-	  		m_flow_t_initial_injection=time;
-	  		m_cur_inj_flw_time=time;
-	  	}
+	  m_flow_time_initial_injection=time;
+  }
+
+  void set_initial_injection_dpm_time(amrex::Real time)
+  {
+	  m_dpm_time_initial_injection=time;
+  }
+
+  void set_final_injection_flow_time()
+  {
+	  if(is_dpm_periodic)
+	  {
+		  m_flow_time_final_injection=1E8;
+	  }
+	  else
+	  {
+		  m_flow_time_final_injection=m_flow_time_initial_injection+m_dpm_time_final;
+		  m_endTime=m_flow_time_final_injection;
+	  }
   }
 
   void set_jet_vel(amrex::Real jet_vel) { m_jetVel = jet_vel; }
@@ -175,10 +189,13 @@ public:
 	  is_dpm_periodic=b;
   }
 
+  amrex::Real get_flow_time_initial_injection(){return m_flow_time_initial_injection;}
+  amrex::Real get_dpm_time_initial_injection(){return m_dpm_time_initial_injection;}
+
 
   amrex::Real dpm_final_time()
   {
-	  return m_dpm_t_final;
+	  return m_dpm_time_final;
   }
 
   int get_override_injection_plane_dir(){return m_override_inj_plane_dir;}
@@ -314,15 +331,16 @@ public:
   amrex::Real m_totalInjTime = 0.;
 
   bool m_use_Fluentdpmfile;
+  bool m_rstrt_Fltdpmsim_from_nonFltDPMChckPointFile=false;
   std::string m_FluentDPMFile;
   long int m_dpm_num_of_time_instants=0;
   bool is_dpm_periodic=true;
 
-  amrex::Real m_cur_inj_dpm_time=0.0;
-  amrex::Real m_nxt_inj_dpm_time=0.0;
-  amrex::Real m_cur_inj_flw_time=0.0;
-  amrex::Real m_nxt_inj_flw_time=0.0;
-  amrex::Real dt_dpm=0.0;
+  amrex::Real m_cur_inj_dpm_time=0.0;				//The current DPM time at which injection has occured
+  amrex::Real m_nxt_inj_dpm_time=0.0;				//The next DPM time at which injection is to occur
+  amrex::Real m_cur_inj_flw_time=0.0;				//The current flow time at which injection is to occur
+  amrex::Real m_nxt_inj_flw_time=0.0;				//The next flow time at which injection is to occur
+  amrex::Real dt_dpm=0.0;							//The time between two consecutive injections. Is updated after every injection
 
 
 protected:
@@ -331,10 +349,12 @@ protected:
   int m_override_inj_plane_dir=-1;
   amrex::Real m_override_inj_plane_loc=0.0;
 
-  amrex::Real m_dpm_t_initial=0.0;
-  amrex::Real m_dpm_t_final=-1.0;
-  amrex::Real m_dpm_t_initial_injection=0.0;
-  amrex::Real m_flow_t_initial_injection=-1.0;		//Start injection as soon as iteration starts
+  amrex::Real m_dpm_time_initial=0.0;					//The minimum time that appears in the Fluent DPM file.
+  amrex::Real m_dpm_time_final=-1.0;					//The maximum time that appears in the Fluent DPM file.
+
+  amrex::Real m_dpm_time_initial_injection=0.0;			//The initial DPM time that injection starts for a particular simulation. Is constant for a simulation even after restarts
+  amrex::Real m_flow_time_initial_injection=-1.0;		//The initial Flow time that injection starts for a particular simulation. Is constant for a simulation even after restarts
+  amrex::Real m_flow_time_final_injection=-1.0;		//The initial Flow time that injection starts for a particular simulation. Is constant for a simulation even after restarts
 
   std::string m_jetName;
   amrex::RealVect m_norm = amrex::RealVect::TheZeroVector();

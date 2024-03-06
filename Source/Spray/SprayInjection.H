@@ -53,10 +53,7 @@ SprayParticleContainer::sprayInjectionfromDPMFile(
 		SprayUnits SPU;
 		const SprayData* fdat = m_sprayData;
 
-		//If fresh start then set the current time to initial injection flow time
-		spray_jet->set_initial_injection_flow_time(time-sim_dt);
-
-		while(time-dt>=spray_jet->m_cur_inj_flw_time)
+		while(abs(time-dt-spray_jet->m_cur_inj_flw_time)<1E-15 || time-dt>=spray_jet->m_cur_inj_flw_time)
 		{
 			//Line numbers in the dpm file
 			long int lineno_current_dpm_time_begin=0;
@@ -225,11 +222,11 @@ SprayParticleContainer::sprayInjectionfromDPMFile(
 			}
 			is_dpm1.close();
 			spray_jet->m_cur_inj_flw_time+=spray_jet->dt_dpm;
-			amrex::Print()<<"Injected "<<ln<<" particles. \n";
+			amrex::Print()<<"Injected "<<ln<<" particles through "<<spray_jet->jet_name()<<"\n";
 			spray_jet->m_cur_inj_dpm_time=spray_jet->m_nxt_inj_dpm_time;
 
-			amrex::Print()<<"Next injection flow time = "<<spray_jet->m_cur_inj_flw_time<<"\n";
-			amrex::Print()<<"Next injection DPM time = "<<spray_jet->m_cur_inj_dpm_time<<"\n";
+			amrex::Print()<<"\tNext injection flow time = "<<spray_jet->m_cur_inj_flw_time<<"\n";
+			amrex::Print()<<"\tNext injection DPM time = "<<spray_jet->m_cur_inj_dpm_time<<"\n\n";
 		}
 	}
 	Redistribute();
