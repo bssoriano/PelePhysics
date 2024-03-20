@@ -47,7 +47,7 @@ SprayJet::SprayJet(const std::string& jet_name, const amrex::Geometry& geom)
   	  {
   		  amrex::Abort("Override injection plane direction should be -1,0,1 or 2");
   	  }
-  	  ps.query("m_rstrt_Fltdpmsim_from_nonFltDPMChckPointFile",m_rstrt_Fltdpmsim_from_nonFltDPMChckPointFile);
+  	  ps.query(".",m_rstrt_Fltdpmsim_from_nonFltDPMChckPointFile);
   	  ps.query("m_override_inj_plane_loc",m_override_inj_plane_loc);
   	  ps.query("is_dpm_periodic",is_dpm_periodic);
 
