@@ -64,9 +64,9 @@ PmfData::read_pmf(const std::string& fname, int a_doAverage, int /*a_verbose*/)
   // Check variable names
   amrex::Print() << variable_count << " variables found in PMF file"
                  << std::endl;
-  if (variable_count != (NUM_SPECIES + 4)) {
-    amrex::Abort("PMF file must have NUM_SPECIES+4 variables");
-  }
+//  if (variable_count != (NUM_SPECIES + 4)) {
+//    amrex::Abort("PMF file must have NUM_SPECIES+4 variables");
+//  }
 
   int line_count = 0;
   std::string remaininglines;
