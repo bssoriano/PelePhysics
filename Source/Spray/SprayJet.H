@@ -70,18 +70,27 @@ public:
   // Call this before using spray jet
   bool jet_active(const amrex::Real time) const
   {
-    if (m_jetDia < 0.) {
-      amrex::Abort("Jet diameter is not set");
-    } else if (m_avgDia < 0.) {
-      amrex::Abort("Average droplet diameter is not set");
-    } else if (m_jetT < 0.) {
-      amrex::Abort("Droplet temperature is not set");
-    }
-    bool check = true;
-    if (time < m_startTime || time > m_endTime) {
-      check = false;
-    }
-    return check;
+	  if(!m_use_Fluentdpmfile)
+	  {
+		  if (m_jetDia < 0.)
+		  {
+			  amrex::Abort("Jet diameter is not set");
+		  }
+		  else if (m_avgDia < 0.)
+		  {
+			  amrex::Abort("Average droplet diameter is not set");
+		  }
+		  else if (m_jetT < 0.)
+		  {
+			  amrex::Abort("Droplet temperature is not set");
+		  }
+	  }
+	  bool check = true;
+	  if (time < m_startTime || time > m_endTime)
+	  {
+		  check = false;
+	  }
+	  return check;
   }
 
   inline bool hollow_spray() const { return m_hollowSpray; }
@@ -92,6 +101,31 @@ public:
   amrex::Real get_avg_T() const { return m_jetT; }
 
   amrex::Real get_avg_Y(const int spf) const { return m_jetY[spf]; }
+
+  bool use_FluentDPMFile(){return m_use_Fluentdpmfile;}
+
+  void set_initial_injection_flow_time(amrex::Real time)
+  {
+	  m_flow_time_initial_injection=time;
+  }
+
+  void set_initial_injection_dpm_time(amrex::Real time)
+  {
+	  m_dpm_time_initial_injection=time;
+  }
+
+  void set_final_injection_flow_time()
+  {
+	  if(is_dpm_periodic)
+	  {
+		  m_flow_time_final_injection=1E8;
+	  }
+	  else
+	  {
+		  m_flow_time_final_injection=m_flow_time_initial_injection+m_dpm_time_final;
+		  m_endTime=m_flow_time_final_injection;
+	  }
+  }
 
   void set_jet_vel(amrex::Real jet_vel) { m_jetVel = jet_vel; }
 
@@ -110,6 +144,11 @@ public:
     if (m_proc < 0 || m_proc > amrex::ParallelDescriptor::NProcs()) {
       amrex::Abort("SprayJet proc not valid");
     }
+  }
+
+  void set_jet_endtime(amrex::Real end_time)
+  {
+	  m_endTime =end_time;
   }
 
   void set_jet_cent(amrex::RealVect jet_cent, const amrex::Geometry& geom)
@@ -139,6 +178,29 @@ public:
     }
   }
 
+  void set_override_injection_plane(int dir,amrex::Real loc)
+  {
+	  m_override_inj_plane_dir=dir;
+	  m_override_inj_plane_loc=loc;
+  }
+
+  void set_dpm_periodic(bool b)
+  {
+	  is_dpm_periodic=b;
+  }
+
+  amrex::Real get_flow_time_initial_injection(){return m_flow_time_initial_injection;}
+  amrex::Real get_dpm_time_initial_injection(){return m_dpm_time_initial_injection;}
+
+
+  amrex::Real dpm_final_time()
+  {
+	  return m_dpm_time_final;
+  }
+
+  int get_override_injection_plane_dir(){return m_override_inj_plane_dir;}
+  amrex::Real get_override_injection_plane_loc(){return m_override_inj_plane_loc;}
+
   void set_start_time(amrex::Real start_time) { m_startTime = start_time; }
   void set_end_time(amrex::Real end_time) { m_endTime = end_time; }
   void set_num_ppp(amrex::Real num_ppp) { m_numPPP = num_ppp; }
@@ -162,6 +224,7 @@ public:
      @param[out] T_part Droplet temperature
      @param[out] Y_part Droplet mass fractions
   */
+
   virtual bool get_new_particle(
     const amrex::Real time,
     const amrex::Real& phi_radial,
@@ -172,6 +235,8 @@ public:
     amrex::Real& dia_part,
     amrex::Real& T_part,
     amrex::Real* Y_part);
+
+  virtual bool get_new_particle(amrex::Real* Y_part);
 
   /**
      Solve for transformed location and velocity based on provided angles and
@@ -265,8 +330,32 @@ public:
   amrex::Real m_totalInjMass = 0.;
   amrex::Real m_totalInjTime = 0.;
 
+  bool m_use_Fluentdpmfile;
+  bool m_rstrt_Fltdpmsim_from_nonFltDPMChckPointFile=false;
+  std::string m_FluentDPMFile;
+  long int m_dpm_num_of_time_instants=0;
+  bool is_dpm_periodic=true;
+
+  amrex::Real m_cur_inj_dpm_time=0.0;				//The current DPM time at which injection has occured
+  amrex::Real m_nxt_inj_dpm_time=0.0;				//The next DPM time at which injection is to occur
+  amrex::Real m_cur_inj_flw_time=0.0;				//The current flow time at which injection is to occur
+  amrex::Real m_nxt_inj_flw_time=0.0;				//The next flow time at which injection is to occur
+  amrex::Real dt_dpm=0.0;							//The time between two consecutive injections. Is updated after every injection
+
+
 protected:
   // Member data
+  //Adding the following variables to include dpm injection from external file
+  int m_override_inj_plane_dir=-1;
+  amrex::Real m_override_inj_plane_loc=0.0;
+
+  amrex::Real m_dpm_time_initial=0.0;					//The minimum time that appears in the Fluent DPM file.
+  amrex::Real m_dpm_time_final=-1.0;					//The maximum time that appears in the Fluent DPM file.
+
+  amrex::Real m_dpm_time_initial_injection=0.0;			//The initial DPM time that injection starts for a particular simulation. Is constant for a simulation even after restarts
+  amrex::Real m_flow_time_initial_injection=-1.0;		//The initial Flow time that injection starts for a particular simulation. Is constant for a simulation even after restarts
+  amrex::Real m_flow_time_final_injection=-1.0;		//The initial Flow time that injection starts for a particular simulation. Is constant for a simulation even after restarts
+
   std::string m_jetName;
   amrex::RealVect m_norm = amrex::RealVect::TheZeroVector();
   amrex::RealVect m_cent = amrex::RealVect::TheZeroVector();
