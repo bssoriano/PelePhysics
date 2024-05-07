@@ -7,8 +7,6 @@
  problem-specific SprayParticlesInitInsert.cpp file, when necessary.
 */
 
-//Added by Sreejith for A74 simulation
-
 std::ifstream& GotoLine(std::ifstream& file, long int num){
     file.seekg(std::ios::beg);
     for(int i=0; i < num - 1; ++i){
@@ -199,8 +197,7 @@ SprayParticleContainer::sprayInjectionfromDPMFile(
 				bool where = Where(p, pld);
 				if (!where)
 				{
-					amrex::Print()<<"\n Problematic particle = "<<p.pos(0)<<" "<<p.pos(1)<<" "<<p.pos(2);
-					//amrex::Abort("Bad injection particle");
+					amrex::Print()<<"\n Ignoring problematic particle at "<<p.pos(0)<<" "<<p.pos(1)<<" "<<p.pos(2)<<"\n";
 				}
 
 				std::pair<int, int> ind(pld.m_grid, pld.m_tile);

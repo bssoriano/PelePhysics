@@ -302,7 +302,6 @@ SprayParticleContainer::SprayInitialize(const std::string& restart_dir)
   bool init_sprays = false;
   if (restart_dir.empty() && spray_init_file.empty()) {
     init_sprays = true;
-    amrex::Print()<<"\nInit sprays = true and restart_dir is empty";
   }
   InitSprayParticles(init_sprays);
   if (!spray_init_file.empty()) {
