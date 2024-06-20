@@ -48,7 +48,17 @@ else
               ifeq ($(lowercase_hcomp),$(filter $(lowercase_hcomp),intel))
                 $(error for intel, specify COMP as intel-classic or intel-llvm)
               else
-                $(error Unknown COMP setting)
+                ifeq ($(lowercase_hcomp),$(filter $(lowercase_hcomp),cray))
+                   CCOMPILER = craycc
+                   CXXCOMPILER = craycxx
+                else
+                  ifeq ($(lowercase_hcomp),$(filter $(lowercase_hcomp),nvhpc))
+                    CCOMPILER = nvc
+                    CXXCOMPILER = nvc++
+                  else
+                    $(error Unknown COMP setting)
+                  endif
+                endif
               endif
 	    endif
 	  endif
