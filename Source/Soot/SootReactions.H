@@ -117,6 +117,7 @@ struct SootReaction
         omega_src[pIndx] += nupp * rate;
       }
     }
+    omega_src[6] = 0.0;
   }
 
   // Return fSootStar, fraction of hydrogenated sites

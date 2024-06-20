@@ -7,6 +7,10 @@
 #include "PelePhysics.H"
 #include "ReactorTypes.H"
 #include "AMReX_Sundials.H"
+#ifdef PELELM_USE_SOOT
+#include "SootReactions.H"
+#include "SootModel.H"
+#endif
 
 #include <arkode/arkode_arkstep.h>
 #include <arkode/arkode_erkstep.h>
@@ -377,6 +381,9 @@ fKernelSpec(
     massfrac[n] = yvec_d[vec_index<OrderType>(n, icell, ncells)];
     rho_pt += massfrac[n];
   }
+#ifdef PELELM_USE_SOOT
+  amrex::Real xi_PAH = massfrac[A2_ID]; //massfrac is rhoY in LMeX
+#endif
   const amrex::Real rho_pt_inv = 1.0 / rho_pt;
 
   for (int n = 0; n < NUM_SPECIES; n++) {
@@ -407,6 +414,43 @@ fKernelSpec(
   amrex::GpuArray<amrex::Real, NUM_SPECIES> cdots_pt = {0.0};
   eos.RTY2WDOT(rho_pt, temp_pt, massfrac.arr, cdots_pt.arr);
 
+#ifdef PELELM_USE_SOOT
+//   amrex::Real x_pah = massfrac[A2_ID];
+//   dimerRate(temp_pt, x_pah);
+
+  amrex::Real rho_conv = 0.001; // Turn kg/m^3 to g/cm^3
+  amrex::GpuArray<amrex::Real, NUM_SPECIES> mw_inv = {0.0};
+  eos.inv_molecular_weight(mw_inv.data());
+  xi_PAH = xi_PAH * rho_conv * mw_inv[A2_ID];
+
+  amrex::Real m_gammaStick = 0.002;
+
+  amrex::Real SootMolarMass = 12.011150; // Carbon
+  /// Soot density (g/cm^3)
+  amrex::Real SootDensity = 1.8;
+  amrex::Real Avna = 6.022140857e23;
+  amrex::Real V0 = SootMolarMass / (Avna * SootDensity);
+  amrex::Real colFact16 = std::pow(V0, 1. / 6.);
+  amrex::Real colFactPi23 = std::pow(6. / M_PI, 2. / 3.);
+  amrex::Real dnfact = 4. * std::sqrt(2.) * colFact16 * colFactPi23 * Avna;
+
+  amrex::Real dimerVol = 2.*10.;
+  amrex::Real m_betaDimerFact = dnfact * std::pow(0.5 * dimerVol, 1. / 6.);
+
+  amrex::Real RU = 8.31446261815324e7;
+  amrex::Real colFact = M_PI * RU / (2. * Avna * SootDensity);
+
+  amrex::Real A_f = m_betaDimerFact * std::sqrt(colFact) * 0.5 * m_gammaStick;
+  amrex::Real n_f = 0.5;
+  amrex::Real ER_f = 0.;
+  amrex::Real rNum = 1;
+  amrex::Real nu_f = 2.;
+  
+  cdots_pt[A2_ID] -= amrex::max(
+    0., A_f * std::pow(temp_pt, n_f) * std::exp(-ER_f / temp_pt) * xi_PAH *
+          xi_PAH);
+#endif
+
   amrex::Real rhoesrc = rhoesrc_ext[icell];
   for (int n = 0; n < NUM_SPECIES; n++) {
     const amrex::Real cdot_rYs =
@@ -417,6 +461,42 @@ fKernelSpec(
   ydot_d[vec_index<OrderType>(NUM_SPECIES, icell, ncells)] =
     rhoesrc * (rho_pt_inv / Cv_pt);
 }
+
+#ifdef PELELM_USE_SOOT
+// Compute the dimerization rate
+AMREX_GPU_DEVICE AMREX_FORCE_INLINE void
+dimerRate(const amrex::Real T, const amrex::Real xi_PAH)
+{
+  amrex::Real m_gammaStick = 0.002;
+
+  amrex::Real SootMolarMass = 12.011150; // Carbon
+  /// Soot density (g/cm^3)
+  amrex::Real SootDensity = 1.8;
+  amrex::Real Avna = 6.022140857e23;
+  amrex::Real V0 = SootMolarMass / (Avna * SootDensity);
+  amrex::Real colFact16 = std::pow(V0, 1. / 6.);
+  amrex::Real colFactPi23 = std::pow(6. / M_PI, 2. / 3.);
+  amrex::Real dnfact = 4. * std::sqrt(2.) * colFact16 * colFactPi23 * Avna;
+
+  amrex::Real dimerVol = 2.*10.;
+  amrex::Real m_betaDimerFact = dnfact * std::pow(0.5 * dimerVol, 1. / 6.);
+
+  amrex::Real RU = 8.31446261815324e7;
+  amrex::Real colFact = M_PI * RU / (2. * Avna * SootDensity);
+
+  amrex::Real A_f = m_betaDimerFact * std::sqrt(colFact) * 0.5 * m_gammaStick;
+  amrex::Real n_f = 0.5;
+  amrex::Real ER_f = 0.;
+  amrex::Real rNum = 1;
+  amrex::Real nu_f = 2.;
+
+  // // The effective rate of dimerization
+  // return amrex::max(
+  //   0., A_f * std::pow(T, n_f) * std::exp(-ER_f / T) * xi_PAH *
+  //         xi_PAH);
+
+}
+#endif
 
 #ifdef AMREX_USE_GPU
 N_Vector
