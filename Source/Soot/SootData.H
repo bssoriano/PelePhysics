@@ -110,7 +110,8 @@ struct SootData
     amrex::Real moments[],
     amrex::Real mom_src[],
     amrex::Real mom_fv[],
-    const SootReaction* sr) const
+    const SootReaction* sr,
+    amrex::Real mom_src_store[]) const
   {
     // Molar concentration of the PAH inception species
     amrex::Real xi_PAH = xi_n[SootGasSpecIndx::indxPAH];
@@ -121,11 +122,17 @@ struct SootData
     // Estimate [DIMER]
     amrex::Real dimerConc = dimerization(convT, betaNucl, dimerRate, mom_fv);
     // Add the nucleation source term to mom_src
+    amrex::Real testval = mom_src[1];
     nucleationMomSrc(betaNucl, dimerConc, mom_src);
+    mom_src_store[0] = mom_src[1] - testval; 
     // Add the condensation source term to mom_src
+    testval = mom_src[1];
     condensationMomSrc(colConst, dimerConc, mom_fv, mom_src);
+    mom_src_store[1] = mom_src[1] - testval; 
     // Add the coagulation source term to mom_src
+    testval = mom_src[1];
     coagulationMomSrc(colConst, T, mu, rho, molarMass, mom_fv, mom_src);
+    mom_src_store[2] = mom_src[1] - testval; 
     amrex::Real surf = sc.S0 * fracMom(0., 1., mom_fv);
     // Reaction rates for surface growth (k_sg), oxidation (k_ox),
     // and fragmentation (k_o2)
@@ -136,8 +143,12 @@ struct SootData
     sr->chemicalSrc(T, surf, xi_n, moments, k_sg, k_ox, k_o2, omega_src);
     if (moments[1] * sc.V0 * pele::physics::Constants::Avna > 1.E-12) {
       // Add the surface growth source to mom_src
+      testval = mom_src[1];
       surfaceGrowthMomSrc(k_sg, mom_fv, mom_src);
+      mom_src_store[3] = mom_src[1] - testval; 
+      testval = mom_src[1];
       oxidFragMomSrc(k_ox, k_o2, mom_fv, mom_src);
+      mom_src_store[4] = mom_src[1] - testval; 
     }
   }
 

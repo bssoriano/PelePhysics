@@ -64,6 +64,7 @@ public:
     amrex::Array4<amrex::Real> const& soot_state,
     const amrex::Real time,
     const amrex::Real dt,
+    amrex::Array4<amrex::Real> const& diff_mom_src,
     const bool pres_term = true) const;
 
   //
