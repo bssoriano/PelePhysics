@@ -231,6 +231,7 @@ SootModel::computeSootSourceTerm(
   Array4<Real> const& soot_state,
   const Real /*time*/,
   const Real dt,
+  Array4<Real> const& diff_mom_src,
   const bool pres_term) const
 {
   AMREX_ASSERT(m_memberDataDefined);
@@ -279,6 +280,7 @@ SootModel::computeSootSourceTerm(
     GpuArray<Real, NUM_SOOT_MOMENTS + 1> mom0;
     GpuArray<Real, NUM_SOOT_MOMENTS + 1> moments;
     Real* momentsPtr = moments.data();
+    amrex::Real mom_src_store[5] = {0.0};
     /*
       These are the values inside the terms in fracMom
       momFV[NUM_SOOT_MOMENTS] - Weight of the delta function
@@ -354,7 +356,10 @@ SootModel::computeSootSourceTerm(
       while (tstart < dt && isub < nsubMAX + 1) {
         sd->computeSrcTerms(
           T, mu, rho, molarMass, convT, betaNucl, colConst, xi_n.data(),
-          omega_src.data(), momentsPtr, mom_srcPtr, mom_fvPtr, sr);
+          omega_src.data(), momentsPtr, mom_srcPtr, mom_fvPtr, sr, mom_src_store);
+        for( int ii = 0 ; ii < 5; ++ii) {
+          diff_mom_src(i, j, k, ii) = mom_src_store[ii];
+        }
         // Estimate subcycling time step size
         Real rate = 1.;
         for (int mom = 0; mom < NUM_SOOT_MOMENTS + 1; ++mom) {
@@ -386,7 +391,7 @@ SootModel::computeSootSourceTerm(
         Real remdt = dt - tstart;
         sd->computeSrcTerms(
           T, mu, rho, molarMass, convT, betaNucl, colConst, xi_n.data(),
-          omega_src.data(), momentsPtr, mom_srcPtr, mom_fvPtr, sr);
+          omega_src.data(), momentsPtr, mom_srcPtr, mom_fvPtr, sr, mom_src_store);
         // Update species concentrations within subcycle
         for (int sp = 0; sp < NUM_SOOT_GS; ++sp) {
           xi_n[sp] += remdt * omega_src[sp];
