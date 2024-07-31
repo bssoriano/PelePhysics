@@ -395,7 +395,7 @@ SootModel::computeSootSourceTerm(
         Real remdt = dt - tstart;
         sd->computeSrcTerms(
           T, mu, rho, molarMass, convT, betaNucl, colConst, xi_n.data(),
-          omega_src.data(), momentsPtr, mom_srcPtr, mom_fvPtr, sr, mom_src_store, reac_src_store);
+          omega_src.data(), momentsPtr, mom_srcPtr, mom_fvPtr, sr, mom_src_store);
         // Update species concentrations within subcycle
         for (int sp = 0; sp < NUM_SOOT_GS; ++sp) {
           xi_n[sp] += remdt * omega_src[sp];
