@@ -232,6 +232,7 @@ SootModel::computeSootSourceTerm(
   const Real /*time*/,
   const Real dt,
   Array4<Real> const& diff_mom_src,
+  Array4<Real> const& reac_mom_src,
   const bool pres_term) const
 {
   AMREX_ASSERT(m_memberDataDefined);
@@ -360,6 +361,9 @@ SootModel::computeSootSourceTerm(
         for( int ii = 0 ; ii < 5; ++ii) {
           diff_mom_src(i, j, k, ii) = mom_src_store[ii];
         }
+        for( int ii = 0 ; ii < NUM_SOOT_GS; ++ii) {
+          reac_mom_src(i, j, k, ii) = omega_src[ii];
+        }
         // Estimate subcycling time step size
         Real rate = 1.;
         for (int mom = 0; mom < NUM_SOOT_MOMENTS + 1; ++mom) {
@@ -391,7 +395,7 @@ SootModel::computeSootSourceTerm(
         Real remdt = dt - tstart;
         sd->computeSrcTerms(
           T, mu, rho, molarMass, convT, betaNucl, colConst, xi_n.data(),
-          omega_src.data(), momentsPtr, mom_srcPtr, mom_fvPtr, sr, mom_src_store);
+          omega_src.data(), momentsPtr, mom_srcPtr, mom_fvPtr, sr, mom_src_store, reac_src_store);
         // Update species concentrations within subcycle
         for (int sp = 0; sp < NUM_SOOT_GS; ++sp) {
           xi_n[sp] += remdt * omega_src[sp];
