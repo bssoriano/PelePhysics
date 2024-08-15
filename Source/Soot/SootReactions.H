@@ -52,7 +52,8 @@ struct SootReaction
     amrex::Real& k_sg,
     amrex::Real& k_ox,
     amrex::Real& k_o2,
-    amrex::Real omega_src[]) const
+    amrex::Real omega_src[],
+    amrex::Real wdot[]) const
   {
     // Number of surface reactions
     const int nsr = NUM_SOOT_REACT;
@@ -104,6 +105,7 @@ struct SootReaction
     for (int i = 0; i < nsr; ++i) {
       // Creation/destruction rates for the i-th reaction
       amrex::Real rate = w_fwd[i] - w_bkwd[i];
+      wdot[i] = rate;
       // Loop over reactant species and subtract nu'_(i,r)*rate
       for (int r = 0; r < rNum[i]; ++r) {
         const int rIndx = nIndx_f[3 * i + r];

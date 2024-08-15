@@ -233,6 +233,7 @@ SootModel::computeSootSourceTerm(
   const Real dt,
   Array4<Real> const& diff_mom_src,
   Array4<Real> const& reac_mom_src,
+  Array4<Real> const& wdot_src,
   const bool pres_term) const
 {
   AMREX_ASSERT(m_memberDataDefined);
@@ -282,6 +283,7 @@ SootModel::computeSootSourceTerm(
     GpuArray<Real, NUM_SOOT_MOMENTS + 1> moments;
     Real* momentsPtr = moments.data();
     amrex::Real mom_src_store[5] = {0.0};
+    amrex::Real wdot[NUM_SOOT_REACT] = {0.0};
     /*
       These are the values inside the terms in fracMom
       momFV[NUM_SOOT_MOMENTS] - Weight of the delta function
@@ -357,12 +359,15 @@ SootModel::computeSootSourceTerm(
       while (tstart < dt && isub < nsubMAX + 1) {
         sd->computeSrcTerms(
           T, mu, rho, molarMass, convT, betaNucl, colConst, xi_n.data(),
-          omega_src.data(), momentsPtr, mom_srcPtr, mom_fvPtr, sr, mom_src_store);
+          omega_src.data(), momentsPtr, mom_srcPtr, mom_fvPtr, sr, mom_src_store, wdot);
         for( int ii = 0 ; ii < 5; ++ii) {
           diff_mom_src(i, j, k, ii) = mom_src_store[ii];
         }
         for( int ii = 0 ; ii < NUM_SOOT_GS; ++ii) {
           reac_mom_src(i, j, k, ii) = omega_src[ii];
+        }
+        for( int ii = 0 ; ii < NUM_SOOT_REACT; ++ii) {
+          wdot_src(i, j, k, ii) = wdot[ii];
         }
         // Estimate subcycling time step size
         Real rate = 1.;
@@ -395,7 +400,7 @@ SootModel::computeSootSourceTerm(
         Real remdt = dt - tstart;
         sd->computeSrcTerms(
           T, mu, rho, molarMass, convT, betaNucl, colConst, xi_n.data(),
-          omega_src.data(), momentsPtr, mom_srcPtr, mom_fvPtr, sr, mom_src_store);
+          omega_src.data(), momentsPtr, mom_srcPtr, mom_fvPtr, sr, mom_src_store, wdot);
         // Update species concentrations within subcycle
         for (int sp = 0; sp < NUM_SOOT_GS; ++sp) {
           xi_n[sp] += remdt * omega_src[sp];
@@ -510,9 +515,10 @@ SootModel::estSootDt(const Box& vbox, Array4<const Real> const& Qstate) const
       Real k_sg = 0.;
       Real k_ox = 0.;
       Real k_o2 = 0.;
+      amrex::Real wdot[NUM_SOOT_REACT] = {0.0};
       // Compute the species reaction source terms into omega_src
       sr->chemicalSrc(
-        T, surf, xi_n.data(), momentsPtr, k_sg, k_ox, k_o2, omega_src.data());
+        T, surf, xi_n.data(), momentsPtr, k_sg, k_ox, k_o2, omega_src.data(), wdot);
       Real mindt = 1.E100;
       for (int sp = 0; sp < NUM_SOOT_GS; ++sp) {
         if (xi_n[sp] > Xcutoff) {
