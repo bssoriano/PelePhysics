@@ -111,7 +111,8 @@ struct SootData
     amrex::Real mom_src[],
     amrex::Real mom_fv[],
     const SootReaction* sr,
-    amrex::Real mom_src_store[]) const
+    amrex::Real mom_src_store[],
+    amrex::Real wdot[]) const
   {
     // Molar concentration of the PAH inception species
     amrex::Real xi_PAH = xi_n[SootGasSpecIndx::indxPAH];
@@ -140,7 +141,7 @@ struct SootData
     amrex::Real k_ox = 0.;
     amrex::Real k_o2 = 0.;
     // Compute the species reaction source terms into omega_src
-    sr->chemicalSrc(T, surf, xi_n, moments, k_sg, k_ox, k_o2, omega_src);
+    sr->chemicalSrc(T, surf, xi_n, moments, k_sg, k_ox, k_o2, omega_src, wdot);
     if (moments[1] * sc.V0 * pele::physics::Constants::Avna > 1.E-12) {
       // Add the surface growth source to mom_src
       testval = mom_src[1];

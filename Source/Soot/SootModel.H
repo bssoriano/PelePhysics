@@ -65,6 +65,8 @@ public:
     const amrex::Real time,
     const amrex::Real dt,
     amrex::Array4<amrex::Real> const& diff_mom_src,
+    amrex::Array4<amrex::Real> const& reac_mom_src,
+    amrex::Array4<amrex::Real> const& wdot_src,
     const bool pres_term = true) const;
 
   //
