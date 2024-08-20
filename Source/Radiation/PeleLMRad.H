@@ -329,6 +329,8 @@ public:
     robin_f_.resize(nlevels);
     absc_.resize(nlevels);
 
+    ebfactVec_.clear();
+
     for (int ilev = 0; ilev < nlevels; ++ilev) {
       ebfactVec_.push_back(
         &(static_cast<amrex::EBFArrayBoxFactory const&>(*factory[ilev])));
