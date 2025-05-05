@@ -1,0 +1,414 @@
+generator: ck2yaml
+input-files: [H2_from_family_A_no_NOx_CHEM_Optimized.inp, CH4_plus_H2_from_LLNL_no_NOx_THERMO.txt,
+  CH4_plus_H2_from_LLNL_no_NOx_TRANSPORT.txt]
+cantera-version: 3.0.0
+date: Tue, 25 Feb 2025 09:52:07 -0800
+
+units: {length: cm, time: s, quantity: mol, activation-energy: cal/mol}
+
+phases:
+- name: gas
+  thermo: ideal-gas
+  elements: [H, N, O, Ar, He]
+  species: [H, H2, O, OH, OHV, H2O, O2, N2, HO2, AR, H2O2, HE]
+  kinetics: gas
+  transport: mixture-averaged
+  state: {T: 300.0, P: 1 atm}
+
+species:
+- name: H
+  composition: {H: 1}
+  thermo:
+    model: NASA7
+    temperature-ranges: [200.0, 1000.0, 6000.0]
+    data:
+    - [2.5, 5.48006725e-16, -1.59937425e-18, 1.86302021e-21, -7.34579718e-25,
+      2.547366e+04, -0.44668285]
+    - [2.5, 0.0, 0.0, 0.0, 0.0, 2.547366e+04, -0.44668285]
+    note: L.6.94
+  transport:
+    model: gas
+    geometry: atom
+    well-depth: 145.0
+    diameter: 2.05
+- name: H2
+  composition: {H: 2}
+  thermo:
+    model: NASA7
+    temperature-ranges: [200.0, 1000.0, 6000.0]
+    data:
+    - [2.72113605, 4.79214245e-03, -1.01482243e-05, 8.96936949e-09, -2.70663102e-12,
+      -951.146702, -0.838520919]
+    - [2.93286575, 8.26608026e-04, -1.46402364e-07, 1.54100414e-11, -6.888048e-16,
+      -816.748424, -1.02830684]
+    note: TPIS78
+  transport:
+    model: gas
+    geometry: linear
+    well-depth: 38.0
+    diameter: 2.92
+    polarizability: 0.79
+    rotational-relaxation: 280.0
+- name: O
+  composition: {O: 1}
+  thermo:
+    model: NASA7
+    temperature-ranges: [200.0, 1000.0, 6000.0]
+    data:
+    - [3.10652772, -2.75690396e-03, 5.11435812e-06, -4.29494187e-09, 1.34756569e-12,
+      2.91277009e+04, 2.30123591]
+    - [2.54363697, -2.73162486e-05, -4.1902952e-09, 4.95481845e-12, -4.79553694e-16,
+      2.92266155e+04, 4.92294637]
+    note: L.1.90
+  transport:
+    model: gas
+    geometry: atom
+    well-depth: 80.0
+    diameter: 2.75
+- name: OH
+  composition: {H: 1, O: 1}
+  thermo:
+    model: NASA7
+    temperature-ranges: [200.0, 1000.0, 6000.0]
+    data:
+    - [3.98454038, -2.33807954e-03, 4.43232593e-06, -3.65814533e-09, 1.27094854e-12,
+      3369.55446, -0.0739403338]
+    - [2.83853033, 1.10741289e-03, -2.94000209e-07, 4.20698729e-11, -2.4228989e-15,
+      3697.88084, 5.8450251]
+    note: IU3.03
+  transport:
+    model: gas
+    geometry: linear
+    well-depth: 80.0
+    diameter: 2.75
+- name: OHV
+  composition: {H: 1, O: 1}
+  thermo:
+    model: NASA7
+    temperature-ranges: [300.0, 1000.0, 5000.0]
+    data:
+    - [3.63725927, 1.85145041e-04, -1.67631272e-06, 2.38736757e-09, -8.43208359e-13,
+      5.00213006e+04, 1.35888797]
+    - [2.88273, 1.0139743e-03, -2.276877e-07, 2.174683e-11, -5.126305e-16,
+      5.03014063e+04, 5.59571605]
+    note: '121286'
+  transport:
+    model: gas
+    geometry: linear
+    well-depth: 80.0
+    diameter: 2.75
+- name: H2O
+  composition: {H: 2, O: 1}
+  thermo:
+    model: NASA7
+    temperature-ranges: [200.0, 1000.0, 6000.0]
+    data:
+    - [4.23947087, -2.38193734e-03, 7.53145778e-06, -6.70039089e-09, 2.2780157e-12,
+      -3.02973253e+04, -1.01390268]
+    - [2.6770389, 2.9731816e-03, -7.7376889e-07, 9.4433514e-11, -4.2689991e-15,
+      -2.98862931e+04, 6.88211912]
+    note: L.5.89
+  transport:
+    model: gas
+    geometry: nonlinear
+    well-depth: 572.4
+    diameter: 2.605
+    dipole: 1.844
+    rotational-relaxation: 4.0
+- name: O2
+  composition: {O: 2}
+  thermo:
+    model: NASA7
+    temperature-ranges: [200.0, 1000.0, 6000.0]
+    data:
+    - [3.65493298, -1.91768034e-03, 6.68974292e-06, -5.89495614e-09, 1.66341808e-12,
+      -1052.70367, 4.17261275]
+    - [3.66096065, 6.56365811e-04, -1.41149627e-07, 2.05797935e-11, -1.29913436e-15,
+      -1214.73078, 3.41670918]
+    note: RUS.89
+  transport:
+    model: gas
+    geometry: linear
+    well-depth: 107.4
+    diameter: 3.458
+    polarizability: 1.6
+    rotational-relaxation: 3.8
+- name: N2
+  composition: {N: 2}
+  thermo:
+    model: NASA7
+    temperature-ranges: [200.0, 1000.0, 6000.0]
+    data:
+    - [3.5876004, -6.025471e-04, 8.98331257e-07, 7.54921682e-10, -7.07467604e-13,
+      -1051.96456, 2.73894037]
+    - [2.95257637, 1.3969004e-03, -4.92631603e-07, 7.86010195e-11, -4.60755204e-15,
+      -924.50184, 5.8712901]
+    note: G.8.02
+  transport:
+    model: gas
+    geometry: linear
+    well-depth: 97.53
+    diameter: 3.621
+    polarizability: 1.76
+    rotational-relaxation: 4.0
+- name: HO2
+  composition: {H: 1, O: 2}
+  thermo:
+    model: NASA7
+    temperature-ranges: [200.0, 1000.0, 5000.0]
+    data:
+    - [3.87761522, -1.15984888e-03, 1.06552565e-05, -1.16818377e-08, 4.03564321e-12,
+      301.405897, 5.42950452]
+    - [4.17228741, 1.88117627e-03, -3.46277286e-07, 1.94657549e-11, 1.76256905e-16,
+      35.1666066, 2.96215519]
+    note: T.1.09
+  transport:
+    model: gas
+    geometry: nonlinear
+    well-depth: 107.4
+    diameter: 3.458
+    rotational-relaxation: 1.0
+- name: AR
+  composition: {Ar: 1}
+  thermo:
+    model: NASA7
+    temperature-ranges: [200.0, 1000.0, 6000.0]
+    data:
+    - [2.5, 5.48006725e-16, -1.59937425e-18, 1.86302021e-21, -7.34579718e-25,
+      -745.375, 4.37967491]
+    - [2.5, 0.0, 0.0, 0.0, 0.0, -745.375, 4.37967491]
+    note: G.5.97
+  transport:
+    model: gas
+    geometry: atom
+    well-depth: 136.5
+    diameter: 3.33
+- name: H2O2
+  composition: {H: 2, O: 2}
+  thermo:
+    model: NASA7
+    temperature-ranges: [200.0, 1000.0, 6000.0]
+    data:
+    - [3.82819116, 3.2730804e-03, 5.58298816e-06, -8.21779307e-09, 3.05493365e-12,
+      -1.76638231e+04, 5.24006979]
+    - [4.57977305, 4.05326003e-03, -1.2984473e-06, 1.982114e-10, -1.13968792e-14,
+      -1.8002418e+04, 0.670111916]
+    note: T.8.03
+  transport:
+    model: gas
+    geometry: nonlinear
+    well-depth: 107.4
+    diameter: 3.458
+    rotational-relaxation: 3.8
+- name: HE
+  composition: {He: 1}
+  thermo:
+    model: NASA7
+    temperature-ranges: [200.0, 1000.0, 6000.0]
+    data:
+    - [2.5, 5.48006725e-16, -1.59937425e-18, 1.86302021e-21, -7.34579718e-25,
+      -745.375, 0.928723974]
+    - [2.5, 0.0, 0.0, 0.0, 0.0, -745.375, 0.928723974]
+    note: G 5/97
+  transport:
+    model: gas
+    geometry: atom
+    well-depth: 10.2
+    diameter: 2.576
+
+reactions:
+- equation: H2 + M <=> 2 H + M  # Reaction 1
+  type: three-body
+  rate-constant: {A: 4.58e+19, b: -1.4, Ea: 1.044e+05}
+  efficiencies: {H2: 2.5, H2O: 12.0, HE: 0.83}
+  note: |-
+    ------------------------------------------------------------------------------
+    \SUBMECH: \H2
+    ------------------------------------------------------------------------------
+    !!_______________________________________________________________________________
+    !!\REACTIONCLASS:  \RH(=)PRODUCTS                             \A              \N              \EA
+    !!_______________________________________________________________________________
+    \AUTHOR: AK !\REF: TSANG AND HAMPSON, J. PHYS. CHEM. REF. DATA, 15:1087 (1986) !\COMMENT:
+    \3RD BODY COLLIDER EFFICIENCIES
+- equation: H2 + O <=> H + OH  # Reaction 2
+  rate-constant: {A: 6.55e+04, b: 2.7, Ea: 6260.0}
+  note: |-
+    _______________________________________________________________________________
+    \REACTIONCLASS:  \RH+R_ABSTRACTION                          \A              \N              \EA
+    _______________________________________________________________________________
+    \SITE: \UNDEF
+    Natarajan, K., and Roth, P. (1987) Combust. Flame 70, 267 - uncertainty +- 29%
+- equation: H2 + OH <=> H + H2O  # Reaction 3
+  rate-constant: {A: 5.13e+13, b: 0.0, Ea: 6990.0}
+  note: '! From Lam et al paper. Uncertainty +- 17%'
+- equation: 2 O + M <=> O2 + M  # Reaction 4
+  type: three-body
+  rate-constant: {A: 6.16e+15, b: -0.5, Ea: 0.0}
+  efficiencies: {H2: 2.5, H2O: 12.0, AR: 0.83, HE: 0.83}
+  note: |-
+    \AUTHOR: AK !\REF: TSANG AND HAMPSON, J. PHYS. CHEM. REF. DATA, 15:1087 (1986) !\COMMENT:
+    \3RD BODY COLLIDER EFFICIENCIES
+- equation: O2 + H <=> O + OH  # Reaction 5
+  rate-constant: {A: 1.04e+14, b: 0.0, Ea: 1.5286e+04}
+  note: |-
+    _______________________________________________________________________________
+    \REACTIONCLASS:  \RADICAL_ADDITION\H                        \A              \N              \EA
+    _______________________________________________________________________________
+    \AUTHOR: AK !\REF: HONG ET AL. PROC. OF THE COMB. INST. 33 (2011) 309?16 !\COMMENT: 2 PARAMETER FIT
+    Original from Hong et al 1.12 +- 0.1 E14 0.0 15508 +- 180. Uncertainty = 8.8%
+- equation: H + OH + M <=> H2O + M  # Reaction 6
+  type: three-body
+  rate-constant: {A: 3.5e+22, b: -2.0, Ea: 0.0}
+  efficiencies: {H2: 0.73, H2O: 3.65, AR: 0.38, HE: 1.38}
+  note: |-
+    \AUTHOR: AK !\REF: LI IJCK 36: 566?75, 2004
+    \3RD BODY COLLIDER EFFICIENCIES
+- equation: O + H2O <=> 2 OH  # Reaction 7
+  rate-constant: {A: 2.97e+06, b: 2.02, Ea: 1.34e+04}
+  note: |-
+    _______________________________________________________________________________
+    \REACTIONCLASS:  \RH+R_ABSTRACTION                          \A              \N              \EA
+    _______________________________________________________________________________
+    \AUTHOR: AK !\REF: SUTHERLAND ET AL., 23RD SYMPOSIUM, P. 51 (1990) !\COMMENT:
+- equation: O + H + M <=> OH + M  # Reaction 8
+  type: three-body
+  rate-constant: {A: 4.71e+18, b: -1.0, Ea: 0.0}
+  efficiencies: {H2: 2.5, H2O: 12.0, AR: 0.75, HE: 0.75}
+  note: |-
+    _______________________________________________________________________________
+    \REACTIONCLASS:  \RADICAL_ALPHA_SCISSION                    \A              \N              \EA
+    _______________________________________________________________________________
+    \AUTHOR: AK !\REF: TSANG AND HAMPSON, J. PHYS. CHEM. REF. DATA, 15:1087 (1986) !\COMMENT:
+    \3RD BODY COLLIDER EFFICIENCIES
+- equation: H + O + M <=> OHV + M  # Reaction 9
+  type: three-body
+  rate-constant: {A: 1.5e+13, b: 0.0, Ea: 5975.0}
+  efficiencies: {H2: 1.0, H2O: 6.5, O2: 0.4, N2: 0.4, AR: 0.35}
+  note: |-
+    _______________________________________________________________________________
+    \REACTIONCLASS:  \RADICAL_ALPHA_SCISSION                    \A              \N              \EA
+    _______________________________________________________________________________
+    \AUTHOR: AK !\REF:KATHROTIA ET AL. COMB _ FLAME 2010 !\COMMENT:
+    \3RD BODY COLLIDER EFFICIENCIES
+- equation: OHV + H2O <=> OH + H2O  # Reaction 10
+  rate-constant: {A: 5.93e+12, b: 0.5, Ea: -860.0}
+  note: |-
+    _______________________________________________________________________________
+    \REACTIONCLASS:  \THIRD_BODY_DEACTIVATION                   \A              \N              \EA
+    _______________________________________________________________________________
+    \AUTHOR: AK !\REF:KATHROTIA ET AL. COMB _ FLAME 2010 !\COMMENT:
+- equation: OHV + H2 <=> OH + H2  # Reaction 11
+  rate-constant: {A: 2.95e+12, b: 0.5, Ea: -444.0}
+  note: '\AUTHOR: AK !\REF:KATHROTIA ET AL. COMB _ FLAME 2010 !\COMMENT:'
+- equation: OHV + N2 <=> OH + N2  # Reaction 12
+  rate-constant: {A: 1.08e+11, b: 0.5, Ea: -1242.0}
+  note: '\AUTHOR: AK !\REF:KATHROTIA ET AL. COMB _ FLAME 2010 !\COMMENT:'
+- equation: OHV + OH <=> 2 OH  # Reaction 13
+  rate-constant: {A: 6.01e+12, b: 0.5, Ea: -764.0}
+  note: '\AUTHOR: AK !\REF:KATHROTIA ET AL. COMB _ FLAME 2010 !\COMMENT:'
+- equation: OHV + H <=> OH + H  # Reaction 14
+  rate-constant: {A: 1.31e+12, b: 0.5, Ea: -167.0}
+  note: '\AUTHOR: AK !\REF:KATHROTIA ET AL. COMB _ FLAME 2010 !\COMMENT:'
+- equation: OHV + AR <=> OH + AR  # Reaction 15
+  rate-constant: {A: 1.69e+12, b: 0.0, Ea: 4135.0}
+  note: '\AUTHOR: AK !\REF:KATHROTIA ET AL. COMB _ FLAME 2010 !\COMMENT:'
+- equation: OHV <=> OH  # Reaction 16
+  rate-constant: {A: 1.45e+06, b: 0.0, Ea: 0.0}
+  note: '\AUTHOR: AK !\REF:KATHROTIA ET AL. COMB _ FLAME 2010 !\COMMENT:'
+- equation: OHV + O2 <=> OH + O2  # Reaction 17
+  rate-constant: {A: 2.1e+12, b: 0.5, Ea: -478.0}
+  note: '\AUTHOR: AK !\REF:KATHROTIA ET AL. COMB _ FLAME 2010 !\COMMENT:'
+- equation: H2O2 (+M) <=> 2 OH (+M)  # Reaction 18
+  type: falloff
+  low-P-rate-constant: {A: 2.35e+24, b: -2.293, Ea: 4.8743e+04}
+  high-P-rate-constant: {A: 2.0e+12, b: 0.9, Ea: 4.8749e+04}
+  Troe: {A: 0.43, T3: 1.0e-30, T1: 1.0e+30}
+  efficiencies: {H2O: 5.1, AR: 0.68, O2: 0.79, H2O2: 5.2, H2: 3.7, HE: 0.44}
+  note: |-
+    \AUTHOR: AK !\REF:KATHROTIA ET AL. COMB _ FLAME 2010 !\COMMENT:
+    \AUTHOR: UB !\REF: TROE, COMBUST. FLAME, 158:594-601 (2011)!\COMMENT: RATE CONSTANT IS FOR N2, !\COMMENT: EFFICIENCIES H2O THE SAME REF, SEPERATE REACTION LEAD TO ERRORS
+    \LOW-PRESSURE-LIMIT
+    \TROE PARAMETERS
+    \3RD BODY COLLIDER EFFICIENCIES
+- equation: H2O2 + H <=> H2O + OH  # Reaction 19
+  rate-constant: {A: 2.41e+13, b: 0.0, Ea: 3970.0}
+  note: |-
+    _______________________________________________________________________________
+    \REACTIONCLASS:  \RH+R_ABSTRACTION                          \A              \N              \EA
+    _______________________________________________________________________________
+    \AUTHOR: AK !\REF:TSANG AND HAMPSON, J. PHYS. CHEM. REF. DATA, 15:1087 (1986) !\COMMENT:
+- equation: H2O2 + H <=> H2 + HO2  # Reaction 20
+  rate-constant: {A: 2.15e+10, b: 1.0, Ea: 6000.0}
+  note: '\AUTHOR: AK !\REF: ELLINGSON J. PHYS. CHEM. (2007) 111, (51), 13554-13566
+    !\COMMENT:'
+- equation: H2O2 + O <=> OH + HO2  # Reaction 21
+  rate-constant: {A: 9.55e+06, b: 2.0, Ea: 3970.0}
+  note: '\AUTHOR: AK !\REF:TSANG AND HAMPSON, J. PHYS. CHEM. REF. DATA,
+    15:1087 (1986) !\COMMENT:'
+- equation: H2O2 + OH <=> H2O + HO2  # Reaction 22
+  duplicate: true
+  rate-constant: {A: 1.74e+12, b: 0.0, Ea: 318.0}
+  note: '\AUTHOR: AK !\REF: HONG ET AL. J. PHYS. CHEM. A 114 (2010) 5718-5727
+    !\COMMENT:'
+- equation: H2O2 + OH <=> H2O + HO2  # Reaction 23
+  duplicate: true
+  rate-constant: {A: 7.59e+13, b: 0.0, Ea: 7269.0}
+  note: '\AUTHOR: !\REF: !\COMMENT:'
+- equation: HO2 + H <=> 2 OH  # Reaction 24
+  rate-constant: {A: 7.08e+13, b: 0.0, Ea: 295.0}
+  note: |-
+    _______________________________________________________________________________
+    \REACTIONCLASS:  \R+R(=)PRODUCTS                            \A              \N              \EA
+    _______________________________________________________________________________
+    \AUTHOR: KPS !\REF: NOT A CLUE WHAT REFERENCE IS HERE AS MECHANISM IS A MESS !\COMMENT: WARNING
+- equation: HO2 + H <=> H2 + O2  # Reaction 25
+  rate-constant: {A: 1.14e+10, b: 1.083, Ea: 554.0}
+  note: '\AUTHOR: AK !\REF:MICHAEL SUTHERLAND 2000 !\COMMENT:'
+- equation: HO2 + O <=> OH + O2  # Reaction 26
+  rate-constant: {A: 3.25e+13, b: 0.0, Ea: 0.0}
+  note: '\AUTHOR: AK !\REF:BAULCH ET AL., J. PHYS. CHEM. REF DATA, 21:411
+    (1992)'
+- equation: HO2 + OH <=> H2O + O2  # Reaction 27
+  rate-constant: {A: 2.39e+13, b: 0.0, Ea: -397.0}
+  note: |-
+    \AUTHOR: KPS !\REF: KEYSER, J. PHYS. CHEM. 92:1193 (1988) REDUCED BY 15% COMMENT: TESTING EFFECT AS ADOPTION OF WONG RATE CONSTANT SEEMS TO INFLUENCE ETHYLENE PROFILES IN ETHANO
+    KEYSER, J. PHYS. CHEM. 92:1193 (1988) Value by Keyser: 2.89e13 - measurements performed at 254 - 382K - uncertainty = Ea = +-100, A = +-5e12
+- equation: 2 HO2 <=> H2O2 + O2  # Reaction 28
+  duplicate: true
+  rate-constant: {A: 1.21e+10, b: 0.422, Ea: -1481.0}
+  note: |-
+    DUP
+    HO2+OH=H2O+O2    1.00E16 0.0 17330   !Non-Arrhenius behavior at LFS-relevant temperatures reported by Hippler et al.
+    DUP
+    \AUTHOR: UB !\REF: M.P. BURKE, S.J. KLIPPENSTEIN, L.B. HARDING, PROC. COMBUST. INST. 34 (2013) 547-555 !\COMMENT: WARNING
+- equation: 2 HO2 <=> H2O2 + O2  # Reaction 29
+  duplicate: true
+  rate-constant: {A: 1.69e+16, b: -0.681, Ea: 1.2932e+04}
+  note: '\AUTHOR: UB !\REF: M.P. BURKE, S.J. KLIPPENSTEIN, L.B. HARDING,
+    PROC. COMBUST. INST. 34 (2013) 547-555 !\COMMENT: WARNING'
+- equation: H + O2 (+M) <=> HO2 (+M)  # Reaction 30
+  duplicate: true
+  type: falloff
+  low-P-rate-constant: {A: 6.5e+18, b: -1.23, Ea: 0.0}
+  high-P-rate-constant: {A: 1.94e+12, b: 0.56, Ea: 0.0}
+  Troe: {A: 1.01, T3: 1.0e-30, T1: 1.0e+30, T2: 1.0e+30}
+  efficiencies: {H2: 1.3, H2O: 10.0, AR: 0.5}
+  note: |-
+    _______________________________________________________________________________
+    \REACTIONCLASS:  \RADICAL_ALPHA_SCISSION                    \A              \N              \EA
+    _______________________________________________________________________________
+    \AUTHOR: AK !\REF:FERNANDES PCCP 2008 !COMMENT:
+     Due to an inability to implement temperature-dependent collision efficiencies in falloff reactions,
+     fall-off kinetics should be expressed in multiple sets for different third-body species - TO DO!
+- equation: H + O2 (+M) <=> HO2 (+M)  # Reaction 31
+  duplicate: true
+  type: falloff
+  low-P-rate-constant: {A: 6.5e+18, b: -1.23, Ea: 0.0}
+  high-P-rate-constant: {A: 1.75e+17, b: -1.7, Ea: 0.0}
+  Troe: {A: 1.01, T3: 1.0e-30, T1: 1.0e+30, T2: 1.0e+30}
+  efficiencies: {H2: 1.3, H2O: 10.0, AR: 0.5}
+  note: |-
+    ! best result with A = 0.65E19
+    !! Orig: TROE/6.7E-1 1.0E-30 1.0E30 1.0E30/
+    ! best result with A = 0.65E19
+    !! Orig: TROE/6.7E-1 1.0E-30 1.0E30 1.0E30/
